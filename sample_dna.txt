@@ -1,0 +1,5 @@
+T A
+A T
+G C
+G C
+G C
