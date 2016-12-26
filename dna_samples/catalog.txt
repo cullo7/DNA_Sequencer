@@ -1,13 +1,13 @@
-*****Sample 1*****
+*****Sample 1***** Complementary
 Length: 25
 Gibb's free energy: -31.37
 Entropy: -534.0
 Enthalpy: -197.4
-*****Sample 2*****
-Length: "+ str(data[3]))
-Gibb's free energy: "+ str(data[2]))
-Entropy; "+ str(data[1]))
-Enthalpy: "+ str(data[0]))
+*****Sample 2***** Complementary, Symmetrical
+Length: 6
+Gibb's free energy: -5.26
+Entropy: -114.8
+Enthalpy: -40.7
 *****Sample 3*****
 Length: "+ str(data[3]))
 Gibb's free energy: "+ str(data[2]))
@@ -22,4 +22,4 @@ Enthalpy: "+ str(data[0]))
 Length: "+ str(data[3]))
 Gibb's free energy: "+ str(data[2]))
 Entropy; "+ str(data[1]))
-Enthalpy: "+ str(data[0]))
+nthalpy: "+ str(data[0]))

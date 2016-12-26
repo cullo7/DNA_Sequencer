@@ -11,12 +11,11 @@ G C
 T A
 A T
 T A
-A T
-T A
 G C
 T A
 G C
 A T
+G C
 C G
 T A
 A T

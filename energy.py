@@ -25,18 +25,20 @@ base_stability_energy = {
     approach from https://en.wikipedia.org/wiki/Nucleic_acid_thermodynamics
 """
 nearest_neighbor_energy = {
-    "AATT" : [-33.1, -92.9, -4.26],
-    "ATTA" : [-30.1, -85.4, -3.67],
-    "TAAT" : [-30.1, -89.1, -2.50],
-    "CAGT" : [-35.6, -95.0, -6.12],
-    "GTCA" : [-35.1, -93.7, -6.09],
-    "CTGA" : [-32.6, -87.9, -5.40],
-    "GACT" : [-34.3, -92.9, -5.51],
-    "CGGC" : [-44.4, -113.8, -9.07],
-    "GCCG" : [-41.0, -102.1, -9.36],
-    "GGCC" : [-33.5, -83.3, -7.66],
-    "AT" : [9.6, 17.2, 4.31],
-    "GC" : [0.4, -11.7, 4.05]
+    "AATT" : [-8.4, -23.6, -1.02],
+    "ATTA" : [-6.5, -18.8, -0.73],
+    "TAAT" : [-6.3, -18.5, -0.60],
+    "CAGT" : [-7.4, -19.3, -1.38],
+    "GTCA" : [-8.6, -23.0, -1.43],
+    "CTGA" : [-6.1, -16.1, -1.16],
+    "GACT" : [-7.7, -20.3, -1.46],
+    "CGGC" : [-10.1, -25.5, -2.09],
+    "GCCG" : [-11.1, -28.4, -2.28],
+    "GGCC" : [-6.7, -15.6, -1.77],
+    "AT" : [0.0, -9.0, 2.8],
+    "CG" : [0.0, -5.9, 1.82],
+    "SYM" : [0.0, -1.4, 0.4],
+    "TA" : [0.4, 0, 0.4]
 }
 
 """
@@ -66,18 +68,27 @@ nearest_neighbor_mismatch_energy = {
 }
 
 # Find energy contribution of head and tail base pairs in DNA sequence
-def get_initiation_energy(base_one, base_two):
-    if pair_one+pair_two in nearest_neighbor_energy:
-        return nearest_neighbor_energy[pair_one+pair_two]
-    # if base pair isn't found we can look for its reverse which will have the same energy (T/A == A/T)
-    elif pair_two[1]+pair_two[0]+pair_one[1]+pair_one[0] in nearest_neighbor_energy:
-        return nearest_neighbor_energy[pair_two[1]+pair_two[0]+pair_one[1]+pair_one[0]]
+def get_initiation_energy(pair_one, pair_two):
+    # if either the initial or terminal base pair is C-G or G-C we add thes energy 
+    if (pair_one == "GC" or pair_one == "CG") or (pair_two == "GC" or pair_two == "CG"):
+        return nearest_neighbor_energy["CG"]
+    # If intial and terminal base pair are A-T or T-A then we add a certain enrgy value
+    elif (pair_one == "AT" or pair_one == "TA") and (pair_two == "TA" or pair_two == "AT"):
+        return nearest_neighbor_energy["AT"]
     else:
         print("Initiation sequence: "+str(pair_one+pair_two)+ "not found")
+        return [0.0,0.0,0.0]
+
+def get_end_energy(init_pair, term_pair):
+    total = [0.0,0.0,0.0];
+    if (init_pair == "AT" and term_pair == "TA") or (init_pair == "GC" and term_pair == "CG") or (init_pair == "TA" and term_pair == "AT") or (init_pair == "CG" and term_pair == "GC"):
+        total=add(total,nearest_neighbor_energy["SYM"])
+    if term_pair == "AT":
+        total=add(total,nearest_neighbor_energy["TA"])
+    return total
 
 # Find energy contribution of inner adjacent dimer (AT/TA) from nearest neigbor model
 def get_nearest_neighbor_energy(pair_one, pair_two):
-    print("nn")
     if pair_one+pair_two in nearest_neighbor_energy:
         return nearest_neighbor_energy[pair_one+pair_two]
     # if base pair sequence isn't found we can look for its reverse which will have the same energy (TC/AG == GA/CT)
@@ -96,3 +107,5 @@ def get_nearest_neighbor_mismatch_energy(pair_one, pair_two):
     else:
         print("Mismatch sequence: "+str(pair_one+pair_two)+ "not found")
 
+def add(t1, t2):
+    return [t1[0]+t2[0], t1[1]+t2[1], t1[2]+t2[2]]

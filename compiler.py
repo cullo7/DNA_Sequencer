@@ -5,6 +5,7 @@
 import sys
 from subprocess import call
 from energy import get_initiation_energy as i_energy
+from energy import get_end_energy as e_energy
 from energy import get_nearest_neighbor_energy as nn_energy
 from energy import get_nearest_neighbor_mismatch_energy as nn_mm_energy
 #from graphic import visualize_genome as visualize
@@ -24,11 +25,10 @@ def find_melting_temperature():
     global prime_5, prime_3
     #iterates over shortest strand
     length = len(prime_5) if len(prime_5) < len(prime_3) else len(prime_3)
-    #create tuple that will hold [enthalpy, entropy, gibb's free energy, sequence length]
-    sequence_data = [0.0,0.0,0.0, 0.0] 
-    sequence_data[3] = length
+    #create tuple that will hold [enthalpy, entropy, gibb's free energy]
+    sequence_data = [0.0,0.0,0.0] 
     # calculate energy values of first pair ignoring nearest neighbor
-    sequence_data = add(sequence_data, i_energy(prime_5[0],prime_3[0]))
+    sequence_data = add(sequence_data, i_energy(prime_5[0]+prime_3[0],prime_5[length-1]+prime_3[length-1]))
 
     for x in range(length-1):
         # calculates base-pair energy based on nearest_neighbor
@@ -46,12 +46,12 @@ def find_melting_temperature():
 
 
     # calculate free energy, entropy and enthalpy of last pair ignoring nearest neighbor
-    sequence_data = add(sequence_data, i_energy(prime_5[length-1],prime_3[length-1]))
+    sequence_data = add(sequence_data, e_energy(prime_5[0]+prime_3[0],prime_5[length-1]+prime_3[length-1]))
     
     # Account for Other factors that will affect temperature/gibbs energy
     # Calculate temperature from Gibbs Energy
 
-    return sequence_data
+    return sequence_data+[length]
 
 """
    string from text file and creates DNA sequence for 5'->3' and 3'->5' strand
@@ -71,9 +71,7 @@ def parse_genome(number):
                 prime_3+=seq[x]
                 even = True
 
-"""
- Show help menu
-"""
+# Show help menu
 def help():
     print("Commands:")
     print("")
@@ -102,10 +100,24 @@ def show(number):
     s = str(start)+","+str(end)+"p"
     call(["sed", "-n",s , "dna_samples/catalog.txt"])
     
+# add tuples of size 3
+def add(t1, t2):
+    return [t1[0]+t2[0], t1[1]+t2[1], t1[2]+t2[2]]
+
+# test if bases are complements
+def is_complement(b1, b2):
+    if (b1 == 'T' and b2 == 'A') or (b1 == 'A' and b2 == 'T'):
+        return True
+    if (b1 == 'C' and b2 == 'G') or (b1 == 'G' and b2 == 'C'):
+        return True
+    return False
 
 if __name__ == '__main__':
 
-    test("1")
+    print("Units")
+    print("Gibb's free energy: kcal/mol")
+    print("Enthalpy: kcal/mol")
+    print("Entropy: eu")
     while True:
         command = input("[DNA_compiler]: ") 
         if  command == "help":
