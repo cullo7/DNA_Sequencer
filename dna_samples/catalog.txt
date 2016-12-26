@@ -8,18 +8,18 @@ Length: 6
 Gibb's free energy: -5.26
 Entropy: -114.8
 Enthalpy: -40.7
-*****Sample 3*****
-Length: "+ str(data[3]))
-Gibb's free energy: "+ str(data[2]))
-Entropy; "+ str(data[1]))
-Enthalpy: "+ str(data[0]))
-*****Sample 4*****
-Length: "+ str(data[3]))
-Gibb's free energy: "+ str(data[2]))
-Entropy; "+ str(data[1]))
-Enthalpy: "+ str(data[0]))
+*****Sample 3***** Single mismatch
+Length: 8
+Gibb's free energy: -6.73
+Entropy; -160.4
+Enthalpy: -56.5
+*****Sample 4***** Single mismatch
+Length: 11
+Gibb's free energy: -6.91
+Entropy; -188.8
+Enthalpy: -65.5
 *****Sample 5*****
-Length: "+ str(data[3]))
-Gibb's free energy: "+ str(data[2]))
-Entropy; "+ str(data[1]))
-nthalpy: "+ str(data[0]))
+Length: 12
+Gibb's free energy: -6.73
+Entropy; -119.0
+nthalpy: -43.7

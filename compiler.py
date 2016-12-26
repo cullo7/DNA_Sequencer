@@ -33,7 +33,10 @@ def find_melting_temperature():
     for x in range(length-1):
         # calculates base-pair energy based on nearest_neighbor
         # if base pair is complementary then we find its nearest neighbor energy
-        if is_complement(prime_5[x+1], prime_3[x+1]):
+        if not is_complement(prime_5[x], prime_3[x]) and x != 0:
+            continue  
+        elif is_complement(prime_5[x+1], prime_3[x+1]):
+            print(prime_5[x+1] +", "+ prime_3[x+1])
             sequence_data = add(sequence_data, nn_energy(prime_5[x:x+2],prime_3[x:x+2]))
         # if base pair isn't a complement we look for its mismatch value as long as it is not the 
         # end of the sequence

@@ -89,6 +89,7 @@ def get_end_energy(init_pair, term_pair):
 
 # Find energy contribution of inner adjacent dimer (AT/TA) from nearest neigbor model
 def get_nearest_neighbor_energy(pair_one, pair_two):
+    print("nn")
     if pair_one+pair_two in nearest_neighbor_energy:
         return nearest_neighbor_energy[pair_one+pair_two]
     # if base pair sequence isn't found we can look for its reverse which will have the same energy (TC/AG == GA/CT)
@@ -99,6 +100,7 @@ def get_nearest_neighbor_energy(pair_one, pair_two):
 
 # # Find energy contribution of inner base pair mismatch from trimer(ATA/TAT) with the mismatch as its middle pair
 def get_nearest_neighbor_mismatch_energy(pair_one, pair_two):
+    print("mm")
     if pair_one+pair_two in nearest_neighbor_mismatch_energy:
         return nearest_neighbor_mismatch_energy[pair_one+pair_two]
     # if base pair sequence isn't found we can look for its reverse which will have the same energy (TCT/AGC == CGA/TCT)
