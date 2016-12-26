@@ -68,10 +68,10 @@ def parse_genome(number):
     for x in range(len(seq)):
         if seq[x] != '/n' and seq[x] != ' ':
             if even:
-                prime_5+=seq[x]
+                prime_3+=seq[x]
                 even = False
             else:
-                prime_3+=seq[x]
+                prime_5+=seq[x]
                 even = True
 
 # Show help menu
@@ -90,6 +90,9 @@ def test(number):
     print("Gibb's free energy: "+ str(data[2]))
     print("Entropy; "+ str(data[1]))
     print("Enthalpy: "+ str(data[0]))
+    # print correct result
+    show_results(number)
+
 
 # prints out a dna sequence from a sample file
 def show(number):
@@ -98,10 +101,25 @@ def show(number):
     with open("dna_samples/dna_sample_"+str(number)+".txt") as f:
         print(f.read())
     # printing expected output for DNA sample
-    start = ((int(number)-1)*5)+1
+    show_results(number)
+    
+# show expected results on file
+def show_results(num):
+    print("Expected Output:")
+    start = ((int(num)-1)*5)+1
     end =  start+4
     s = str(start)+","+str(end)+"p"
     call(["sed", "-n",s , "dna_samples/catalog.txt"])
+
+# show all sample sequences
+def show_all(n):
+    for x in range(n):
+        show(x+1)
+
+# test all samples
+def test_all(n):
+    for x in range(n):
+            test(x+1)
     
 # add tuples of size 3
 def add(t1, t2):
@@ -117,10 +135,15 @@ def is_complement(b1, b2):
 
 if __name__ == '__main__':
 
-    print("Units")
+    print("Units:")
     print("Gibb's free energy: kcal/mol")
     print("Enthalpy: kcal/mol")
-    print("Entropy: eu")
+    print("Entropy: eu\n")
+
+    # nnumber of samples
+    samples = 5
+
+    # Command prompt loop
     while True:
         command = input("[DNA_compiler]: ") 
         if  command == "help":
@@ -129,6 +152,8 @@ if __name__ == '__main__':
             file_name = input("select a number between 1 and 25, inclusive: ")
             if file_name.isdigit():
                 test(file_name)
+            elif file_name == "all":
+                test_all(samples)
             else:
                 print("Invalid input: an integer between 1 and 25 required")
                 continue
@@ -136,6 +161,8 @@ if __name__ == '__main__':
             file_name = input("select a number between 1 and 25, inclusive: ")
             if file_name.isdigit():
                 show(file_name)
+            elif file_name == "all":
+               show_all(samples)
             else:
                 print("Invalid input: an integer between 1 and 25 required")
                 continue
