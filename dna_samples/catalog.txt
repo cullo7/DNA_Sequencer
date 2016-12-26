@@ -1,0 +1,25 @@
+*****Sample 1*****
+Length: 25
+Gibb's free energy: -31.37
+Entropy: -534.0
+Enthalpy: -197.4
+*****Sample 2*****
+Length: "+ str(data[3]))
+Gibb's free energy: "+ str(data[2]))
+Entropy; "+ str(data[1]))
+Enthalpy: "+ str(data[0]))
+*****Sample 3*****
+Length: "+ str(data[3]))
+Gibb's free energy: "+ str(data[2]))
+Entropy; "+ str(data[1]))
+Enthalpy: "+ str(data[0]))
+*****Sample 4*****
+Length: "+ str(data[3]))
+Gibb's free energy: "+ str(data[2]))
+Entropy; "+ str(data[1]))
+Enthalpy: "+ str(data[0]))
+*****Sample 5*****
+Length: "+ str(data[3]))
+Gibb's free energy: "+ str(data[2]))
+Entropy; "+ str(data[1]))
+Enthalpy: "+ str(data[0]))
