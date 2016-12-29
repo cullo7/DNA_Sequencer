@@ -3,23 +3,102 @@ Length: 25
 Gibb's free energy: -31.37
 Entropy: -534.0
 Enthalpy: -197.4
+Temperature: -
+
 *****Sample 2***** Complementary, Symmetrical
 Length: 6
 Gibb's free energy: -5.26
 Entropy: -114.8
 Enthalpy: -40.7
-*****Sample 3***** Single mismatch
+Temperature: -
+
+*****Sample 3***** Single mismatch, C-T, bp 4
 Length: 8
 Gibb's free energy: -6.73
 Entropy; -160.4
 Enthalpy: -56.5
-*****Sample 4***** Single mismatch
+Temperature: -
+
+*****Sample 4***** Single mismatch, C-T, bp 6
 Length: 11
 Gibb's free energy: -6.91
 Entropy; -188.8
 Enthalpy: -65.5
-*****Sample 5*****
+Temperature: -
+
+*****Sample 5***** Single mismatch, G-T, bp 5
+Length: 9
+Gibb's free energy: -7.75
+Entropy; -141.0
+Enthalpy: -51.5
+Temperature: 323.15
+
+*****Sample 6***** Single mismatch, G-T, bp 5
+Length: 9
+Gibb's free energy: -8.49
+Entropy; -178.5
+Enthalpy: -63.9
+Temperature: 324.45
+
+*****Sample 7***** Double mismatch, G-T, bp 4,9
 Length: 12
-Gibb's free energy: -6.73
-Entropy; -119.0
-nthalpy: -43.7
+Gibb's free energy: -8.42
+Entropy; -216.1
+Enthalpy: -75.5
+Temperature: 321.85
+
+*****Sample 8***** Single mismatch, G-A, bp 5
+Length: 9
+Gibb's free energy: -3.92
+Entropy; -116
+Enthalpy: -39.9
+Temperature: 297.05
+
+*****Sample 9***** Double mismatch, G-A, bp 4, 9
+Length: 9
+Gibb's free energy: -10.61
+Entropy; -202.6
+Enthalpy: -73.5
+Temperature: 332.45
+
+*****Sample 10***** Single mismatch, C-A, bp 5
+Length: 9
+Gibb's free energy: -6.98
+Entropy; -140.4
+Enthalpy: -50.5
+Temperature: 318.35
+
+*****Sample 11***** Single mismatch, C-A, bp 6
+Length: 11
+Gibb's free energy: -7.75
+Entropy; -185.6
+Enthalpy: -65.3
+Temperature: 320.35
+
+*****Sample 12***** Single mismatch, A-A, bp 5
+Length: 9
+Gibb's free energy: -4.86
+Entropy; -148.0
+Enthalpy: -50.8
+Temperature: 320.35
+
+*****Sample 13***** Single mismatch, C-C, bp 5
+Length: 9
+Gibb's free energy: -3.14
+Entropy; -133.2
+Enthalpy: -44.5
+Temperature: 293.45
+
+*****Sample 14***** Single mismatch, G-G, bp 5
+Length: 9
+Gibb's free energy: -5.34
+Entropy; -138.8
+Enthalpy: -48.4
+Temperature: 308.05
+
+*****Sample 15***** Single mismatch, T-T, bp 5
+Length: 9
+Gibb's free energy: -6.83
+Entropy; -158.3
+Enthalpy: -55.9
+Temperature: 316.65

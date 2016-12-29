@@ -103,7 +103,7 @@ def help():
     print("help: Show help menu")
     print("test: Run program on sequence and compare to expected results")
     print("show: Show sequence and expected result for that sequence")
-    print("details: Explains experimental conditions and procedure")
+    print("details: Explains experimental conditions and procedure\n")
 
 # runs program on dna sequence and compares it to expected value from catalog.txt file
 def test(number):
@@ -120,8 +120,8 @@ def test(number):
 def details():
     print("Parameters:")
     print("pH: 7")
-    print("Mg+ molarity: 1")
-    print("Oligonucleotide probe molarity:i\n")
+    print("Mg+ molarity: .5")
+    print("Oligonucleotide probe molarity: 1\n")
     print("Measurements:")
     print("Gibb's free energy: kcal/mol")
     print("Enthalpy: kcal/mol")
@@ -130,7 +130,7 @@ def details():
     print("Goal:")
     print("To find the temperature at which half of a DNA duplex")
     print("dissociates 1/2 of its base pairs from the Gibb's energy")
-    print("contribution of each base pair bond.")
+    print("contribution of each base pair bond.\n")
 
 # prints out a dna sequence from a sample file
 def show(number):
@@ -144,7 +144,7 @@ def show(number):
 # show expected results on file
 def show_results(num):
     print("Expected Output:")
-    start = ((int(num)-1)*5)+1
+    start = ((int(num)-1)*7)+1
     end =  start+4
     s = str(start)+","+str(end)+"p"
     call(["sed", "-n",s , "dna_samples/catalog.txt"])
@@ -176,11 +176,14 @@ if __name__ == '__main__':
     details() 
 
     # nnumber of samples
-    samples = 5
+    with open("dna_samples/catalog.txt") as f:
+        samples = sum(1 for _ in f)/7
+
+    print(samples)
 
     # Command prompt loop
     while True:
-        command = input("[DNA_compiler]: ") 
+        command = (input("[DNA_compiler]: ")).strip() 
         if  command == "help":
             help()
         elif command == "test":
@@ -206,4 +209,4 @@ if __name__ == '__main__':
         elif command == "details":
             details()
         else:
-            print("Invalid command: enter help() for command menu")
+            print("Invalid command: enter help for command menu")
