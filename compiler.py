@@ -3,6 +3,7 @@
 """
 
 import sys
+import math
 from subprocess import call
 from energy import get_initiation_energy as i_energy
 from energy import get_end_energy as e_energy
@@ -33,28 +34,49 @@ def find_melting_temperature():
     for x in range(length-1):
         # calculates base-pair energy based on nearest_neighbor
         # if base pair is complementary then we find its nearest neighbor energy
-        if not is_complement(prime_5[x], prime_3[x]) and x != 0:
-            continue  
+        if not is_complement(prime_5[x], prime_3[x]) and (x == 0 or x == length-1):
+            # We cannot evaluate a mismatch on the end of a sequence yet
+            pass
         elif is_complement(prime_5[x+1], prime_3[x+1]):
             print(prime_5[x+1] +", "+ prime_3[x+1])
             sequence_data = add(sequence_data, nn_energy(prime_5[x:x+2],prime_3[x:x+2]))
         # if base pair isn't a complement we look for its mismatch value as long as it is not the 
         # end of the sequence
-        elif x+2 < length:
-            sequence_data = add(sequence_data, nn_mm_energy(prime_5[x:x+3],prime_3[x:x+3]))
-        # We cannot evaluate a mismatch on the end of a sequence
         else:
-            print("Error: unable to evaluate mismatch on the end of a sequence")
-            return -1
-
+            print(prime_5[x+1] +", "+ prime_3[x+1])
+            sequence_data = add(sequence_data, nn_mm_energy(prime_5[x:x+2],prime_3[x:x+2]))
 
     # calculate free energy, entropy and enthalpy of last pair ignoring nearest neighbor
     sequence_data = add(sequence_data, e_energy(prime_5[0]+prime_3[0],prime_5[length-1]+prime_3[length-1]))
     
     # Account for Other factors that will affect temperature/gibbs energy
-    # Calculate temperature from Gibbs Energy
 
-    return sequence_data+[length]
+    """
+        Calculate temperature from Gibbs Energy:
+        [A], [B] - molarity of dissociated single strand
+        [AB] - molarity of associated double strand
+        If no additional nucleic acids are present, then [A], [B], and [AB] will be equal, and equal to half the 
+        initial concentration of double-stranded nucleic acid, [AB]initial. This gives an expression for the melting 
+        point of a nucleic acid duplex of
+    """
+    AB_mol = 1
+    Mg_mol = .5
+    R = 8.3144598
+    temperature = -(sequence_data[0])/(R*math.log(AB_mol,math.exp(1)))
+
+    """
+    temperature calculation with salt
+    a = math.pow(3.92,-5)
+    b = math.pow(-9.11,-6) 
+    c = math.pow(6.26,-5)
+    d = math.pow(1.42,-5)
+    e = math.pow(-4.82,-4)
+    f = math.pow(5.25,-4)
+    g = math.pow(8.31,-5)
+    temperature_salt = (1/temperature) + a + b*math.log(Mg_mol, math.exp(1)) + (f * (c+d*math.log(Mg_mol,math.exp(1))))+ ((1/(2*(length-1)))*(e + (f*math.log(Mg_mol, math.exp(1))) + (g*math.pow(math.log(Mg_mol, math.exp(1)), 2))))
+    """
+ 
+    return sequence_data+[length]+[temperature]
 
 """
    string from text file and creates DNA sequence for 5'->3' and 3'->5' strand
@@ -78,9 +100,10 @@ def parse_genome(number):
 def help():
     print("Commands:")
     print("")
-    print("help: show help menu")
-    print("test: run program on sequence and compare to expected results")
-    print("show: show sequence and expected result for that sequence")
+    print("help: Show help menu")
+    print("test: Run program on sequence and compare to expected results")
+    print("show: Show sequence and expected result for that sequence")
+    print("details: Explains experimental conditions and procedure")
 
 # runs program on dna sequence and compares it to expected value from catalog.txt file
 def test(number):
@@ -90,9 +113,24 @@ def test(number):
     print("Gibb's free energy: "+ str(data[2]))
     print("Entropy; "+ str(data[1]))
     print("Enthalpy: "+ str(data[0]))
+    print("Temperature: "+ str(data[4]))
     # print correct result
     show_results(number)
 
+def details():
+    print("Parameters:")
+    print("pH: 7")
+    print("Mg+ molarity: 1")
+    print("Oligonucleotide probe molarity:i\n")
+    print("Measurements:")
+    print("Gibb's free energy: kcal/mol")
+    print("Enthalpy: kcal/mol")
+    print("Entropy: eu")
+    print("Temperature: K\n")
+    print("Goal:")
+    print("To find the temperature at which half of a DNA duplex")
+    print("dissociates 1/2 of its base pairs from the Gibb's energy")
+    print("contribution of each base pair bond.")
 
 # prints out a dna sequence from a sample file
 def show(number):
@@ -135,10 +173,7 @@ def is_complement(b1, b2):
 
 if __name__ == '__main__':
 
-    print("Units:")
-    print("Gibb's free energy: kcal/mol")
-    print("Enthalpy: kcal/mol")
-    print("Entropy: eu\n")
+    details() 
 
     # nnumber of samples
     samples = 5
@@ -168,5 +203,7 @@ if __name__ == '__main__':
                 continue
         elif command == "exit":
             sys.exit()
+        elif command == "details":
+            details()
         else:
             print("Invalid command: enter help() for command menu")

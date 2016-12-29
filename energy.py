@@ -43,28 +43,73 @@ nearest_neighbor_energy = {
 
 """
     Gibb's free energy from each adjacent mismatch base pair using the nearest neighbor 
-    approach with trimer surrounding mismatch. Mismatch pair was restricted to C-T
+    approach with trimer surrounding mismatch.
+    TODO: C-A, C-C, G-G, A-A, T-T, G-A, G-T
 """
 nearest_neighbor_mismatch_energy = {
-# seven linearly independent trimers
-"ACCTTG" : [5.9, 13.8, 1.62], 
-"CCCGTG" : [4.4, 9.0, 1.60], 
-"GCACTT" : [3.3, 6.2, 1.37], 
-"GCCCTG" : [7.5, 19.0, 1.60], 
-"GCGCTC" : [0.8, -0.7, 1.02], 
-"GCTCTA" : [1.1, -0.8, 1.35],
-"TCCATG" : [6.4, 14.3, 1.95],
+    #C-T 
+    "ACTT" : [0.7, 0.2, 0.64],
+    "ATTC" : [-1.2, -6.2, 0.73],
+    "CCGT" : [-0.8, -4.5, 0.62],
+    "CTGC" : [-1.5, -6.1, 0.40],
+    "GCCT" : [2.3, 5.4, 0.62],
+    "GTCC" : [5.2, 13.5, 0.98],
+    "TCAT" : [1.2, -20.3, 0.97],
+    "TTAC" : [1.0, 0.7, 0.75],
 
-# nine other trimer contexts
-"ACATTT" : [1.7, 1.0, 1.39], 
-"ACGTTC" : [-0.8, -5.9, 1.04],
-"ACTTTA" : [-0.5, -6.0, 1.37],
-"CCAGTT" : [0.2, -3.8, 1.37], 
-"CCGGTC" : [-2.3, -10.7, 1.02], 
-"CCTGTA" : [-2.0, -10.8, 1.35], 
-"TCAATT" : [2.2, 1.5, 1.72], 
-"TCGATC" : [-0.3, -5.4, 1.37], 
-"TCTATA" : [0.0, -5.5, 1.70],
+    #C-A
+    "AATC" : [2.3, 4.6, 0.88],
+    "ACTA" : [5.3, 14.6, 0.77],
+    "CAGC" : [1.9, 3.7, 0.75],
+    "CCGA" : [0.6, -0.6, 0.79],
+    "GACC" : [5.2, 14.2, 0.81],
+    "GCCA" : [-0.7, -3.8, 0.47],
+    "TAAC" : [3.4, 8.0, 0.92],
+    "TCAA" : [7.6, 20.2, 1.33],
+
+    #G-A
+    "AATG" : [-0.6, -2.3, 0.14],
+    "AGTA" : [-0.7, -2.3, 0.02],
+    "CAGG" : [-0.7, -2.3, 0.03],
+    "CGGA" : [-4.0, -13.2, 0.11],
+    "GACG" : [-0.6, -1.0, -0.25],
+    "GGCA" : [0.5, 3.2, -0.52],
+    "TAAG" : [0.7, 0.7, 0.42],
+    "TGAA" : [3.0, 7.4, 0.74],
+
+    #G-T
+    "AGTT" : [1.0, 0.9, 0.71],
+    "ATTG" : [-2.5, -8.3, 0.07],
+    "CGGT" : [-4.1, -11.7, -0.47],
+    "CTGG" : [-2.8, -8.0, -0.32],
+    "GGCT" : [3.3, 10.4, 0.08],
+    "GTCG" : [-4.4, -12.3, -0.59],
+    "TGAT" : [-0.1, -1.7, 0.43],
+    "TTAG" : [-1.3, -5.3, 0.34],
+
+    #C-C
+    "ACTC" : [0.0, -4.4, 1.33],
+    "CCGC" : [-1.5, -7.2, 0.7],
+    "GCCC" : [3.6, 8.9, 0.79],
+    "TCAC" : [6.1, 16.4, 1.05],
+
+    #A-A
+    "AATA" : [1.2, 1.7, 0.61],
+    "CAGA" : [-0.9, -4.2, 0.43],
+    "GACA" : [-2.9, -9.8, 0.17],
+    "TAAA" : [4.7, 12.9, 0.69],
+
+    #G-G
+    "AGTG" : [-3.1, -9.5, -0.13],
+    "CGGG" : [-4.9, -15.3, -0.11],
+    "GGCG" : [-6.0, -15.8, -1.11],
+    "TGAG" : [1.6, 3.6, 0.44],
+
+    #T-T
+    "ATTT" : [-2.7, -10.8, 0.69],
+    "CTGT" : [-5.0, -15.8, -0.12],
+    "GTCT" : [-2.2, -8.4, 0.45],
+    "TTAT" : [0.2, -1.5, 0.68],
 }
 
 # Find energy contribution of head and tail base pairs in DNA sequence
@@ -90,6 +135,7 @@ def get_end_energy(init_pair, term_pair):
 # Find energy contribution of inner adjacent dimer (AT/TA) from nearest neigbor model
 def get_nearest_neighbor_energy(pair_one, pair_two):
     print("nn")
+    print("pairs "+pair_one+pair_two)
     if pair_one+pair_two in nearest_neighbor_energy:
         print(nearest_neighbor_energy[pair_one+pair_two][2])
         return nearest_neighbor_energy[pair_one+pair_two]
@@ -107,9 +153,9 @@ def get_nearest_neighbor_mismatch_energy(pair_one, pair_two):
         print(nearest_neighbor_mismatch_energy[pair_one+pair_two][2])
         return nearest_neighbor_mismatch_energy[pair_one+pair_two]
     # if base pair sequence isn't found we can look for its reverse which will have the same energy (TCT/AGC == CGA/TCT)
-    elif pair_two[2]+pair_two[1]+pair_two[0]+pair_one[2]+pair_one[1]+pair_one[0] in nearest_neighbor_mismatch_energy:
-        print(nearest_neighbor_mismatch_energy[pair_two[2]+pair_two[1]+pair_two[0]+pair_one[2]+pair_one[1]+pair_one[0]][2])
-        return nearest_neighbor_mismatch_energy[pair_two[2]+pair_two[1]+pair_two[0]+pair_one[2]+pair_one[1]+pair_one[0]]
+    elif pair_two[1]+pair_two[0]+pair_one[1]+pair_one[0] in nearest_neighbor_mismatch_energy:
+        print(nearest_neighbor_mismatch_energy[pair_two[1]+pair_two[0]+pair_one[1]+pair_one[0]][2])
+        return nearest_neighbor_mismatch_energy[pair_two[1]+pair_two[0]+pair_one[1]+pair_one[0]]
     else:
         print("Mismatch sequence: "+str(pair_one+pair_two)+ "not found")
 
