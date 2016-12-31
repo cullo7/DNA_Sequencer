@@ -9,6 +9,7 @@ from energy import get_initiation_energy as i_energy
 from energy import get_end_energy as e_energy
 from energy import get_nearest_neighbor_energy as nn_energy
 from energy import get_nearest_neighbor_mismatch_energy as nn_mm_energy
+from energy import get_symmetry_g as get_sym
 #from graphic import visualize_genome as visualize
 
 # string that will hold the dna sequence 
@@ -29,25 +30,32 @@ def find_melting_temperature():
     #create tuple that will hold [enthalpy, entropy, gibb's free energy]
     sequence_data = [0.0,0.0,0.0] 
     # calculate energy values of first pair ignoring nearest neighbor
-    sequence_data = add(sequence_data, i_energy(prime_5[0]+prime_3[0],prime_5[length-1]+prime_3[length-1]))
+    sequence_data = add(sequence_data, i_energy(prime_3[0]+prime_5[0],prime_3[length-1]+prime_5[length-1]))
+
+    symmetrical = True
 
     for x in range(length-1):
+        # check for symmetry
+        if(prime_3[x]+prime_5[x] != prime_5[length-1-x]+prime_3[length-1-x]):
+            symmetrical = False
         # calculates base-pair energy based on nearest_neighbor
         # if base pair is complementary then we find its nearest neighbor energy
-        if not is_complement(prime_5[x], prime_3[x]) and (x == 0 or x == length-1):
+        if (not is_complement(prime_5[x], prime_3[x]) and x == 0) or (not is_complement(prime_5[x+1], prime_3[x+1]) and x+1 == length):
             # We cannot evaluate a mismatch on the end of a sequence yet
-            pass
-        elif is_complement(prime_5[x+1], prime_3[x+1]):
-            print(prime_5[x+1] +", "+ prime_3[x+1])
-            sequence_data = add(sequence_data, nn_energy(prime_5[x:x+2],prime_3[x:x+2]))
+            continue
+        elif is_complement(prime_5[x+1], prime_3[x+1]) and is_complement(prime_3[x], prime_5[x]):
+            #print(prime_3[x]+prime_3[x+1] +", "+ prime_5[x]+prime_5[x+1])
+            sequence_data = add(sequence_data, nn_energy(prime_3[x:x+2],prime_5[x:x+2]))
         # if base pair isn't a complement we look for its mismatch value as long as it is not the 
         # end of the sequence
         else:
-            print(prime_5[x+1] +", "+ prime_3[x+1])
-            sequence_data = add(sequence_data, nn_mm_energy(prime_5[x:x+2],prime_3[x:x+2]))
+            #print(prime_3[x]+prime_3[x+1] +", "+ prime_5[x]+prime_5[x+1])
+            sequence_data = add(sequence_data, nn_mm_energy(prime_3[x:x+2],prime_5[x:x+2]))
 
     # calculate free energy, entropy and enthalpy of last pair ignoring nearest neighbor
-    sequence_data = add(sequence_data, e_energy(prime_5[0]+prime_3[0],prime_5[length-1]+prime_3[length-1]))
+    sequence_data = add(sequence_data, e_energy(prime_3[0]+prime_5[0],prime_3[length-1]+prime_5[length-1]))
+    if symmetrical:
+        sequence_data = add(sequence_data, get_sym())
     
     # Account for Other factors that will affect temperature/gibbs energy
 
@@ -62,7 +70,7 @@ def find_melting_temperature():
     AB_mol = 1
     Mg_mol = .5
     R = 8.3144598
-    temperature = -(sequence_data[0])/(R*math.log(AB_mol,math.exp(1)))
+    temperature = -(sequence_data[2])/(R*math.log(AB_mol/2,math.exp(1)))
 
     """
     temperature calculation with salt
@@ -145,7 +153,7 @@ def show(number):
 def show_results(num):
     print("Expected Output:")
     start = ((int(num)-1)*7)+1
-    end =  start+4
+    end =  start+5
     s = str(start)+","+str(end)+"p"
     call(["sed", "-n",s , "dna_samples/catalog.txt"])
 
@@ -177,9 +185,7 @@ if __name__ == '__main__':
 
     # nnumber of samples
     with open("dna_samples/catalog.txt") as f:
-        samples = sum(1 for _ in f)/7
-
-    print(samples)
+        samples = int(sum(1 for _ in f)/7)
 
     # Command prompt loop
     while True:
@@ -187,7 +193,7 @@ if __name__ == '__main__':
         if  command == "help":
             help()
         elif command == "test":
-            file_name = input("select a number between 1 and 25, inclusive: ")
+            file_name = (input("select a number between 1 and 25, inclusive: ")).strip()
             if file_name.isdigit():
                 test(file_name)
             elif file_name == "all":
@@ -196,7 +202,7 @@ if __name__ == '__main__':
                 print("Invalid input: an integer between 1 and 25 required")
                 continue
         elif command == "show":
-            file_name = input("select a number between 1 and 25, inclusive: ")
+            file_name = (input("select a number between 1 and 25, inclusive: ")).strip()
             if file_name.isdigit():
                 show(file_name)
             elif file_name == "all":

@@ -113,35 +113,42 @@ nearest_neighbor_mismatch_energy = {
 }
 
 # Find energy contribution of head and tail base pairs in DNA sequence
-def get_initiation_energy(pair_one, pair_two):
+def get_initiation_energy(init_pair, term_pair):
+    total = [0.0, 0.0, 0.0]
     # if either the initial or terminal base pair is C-G or G-C we add thes energy 
-    if (pair_one == "GC" or pair_one == "CG") or (pair_two == "GC" or pair_two == "CG"):
-        return nearest_neighbor_energy["CG"]
+    print("initial energy: "+init_pair+" "+term_pair)
+    if (init_pair == "GC" or term_pair == "CG") or (init_pair == "CG" or term_pair == "GC"):
+        print("Adding GC val")
+        total = add(total, nearest_neighbor_energy["CG"])
     # If intial and terminal base pair are A-T or T-A then we add a certain enrgy value
-    elif (pair_one == "AT" or pair_one == "TA") and (pair_two == "TA" or pair_two == "AT"):
-        return nearest_neighbor_energy["AT"]
-    else:
-        print("Initiation sequence: "+str(pair_one+pair_two)+ "not found")
-        return [0.0,0.0,0.0]
+    if (init_pair == "AT" or term_pair == "TA") and (init_pair == "TA" or term_pair == "AT"):
+        print("Adding AT val")
+        total = add(total, nearest_neighbor_energy["AT"])
+    print(total)
+    return total
 
+# get value for symmetry when sequence is symmetrical
+def get_symmetry_g():
+    return nearest_neighbor_energy["SYM"]
+
+# evaluate energy contribution of the terminal pair of a sequence
 def get_end_energy(init_pair, term_pair):
     total = [0.0,0.0,0.0];
-    if (init_pair == "AT" and term_pair == "TA") or (init_pair == "GC" and term_pair == "CG") or (init_pair == "TA" and term_pair == "AT") or (init_pair == "CG" and term_pair == "GC"):
-        total=add(total,nearest_neighbor_energy["SYM"])
+    # If terminal pair is 3' -> 5' == A -> T
     if term_pair == "AT":
+        print("Adding A-T energy")
         total=add(total,nearest_neighbor_energy["AT"])
     return total
 
 # Find energy contribution of inner adjacent dimer (AT/TA) from nearest neigbor model
 def get_nearest_neighbor_energy(pair_one, pair_two):
     print("nn")
-    print("pairs "+pair_one+pair_two)
     if pair_one+pair_two in nearest_neighbor_energy:
-        print(nearest_neighbor_energy[pair_one+pair_two][2])
+        #print(nearest_neighbor_energy[pair_one+pair_two][2])
         return nearest_neighbor_energy[pair_one+pair_two]
     # if base pair sequence isn't found we can look for its reverse which will have the same energy (TC/AG == GA/CT)
     elif pair_two[1]+pair_two[0]+pair_one[1]+pair_one[0] in nearest_neighbor_energy:
-        print(nearest_neighbor_energy[pair_two[1]+pair_two[0]+pair_one[1]+pair_one[0]][2])
+        #print(nearest_neighbor_energy[pair_two[1]+pair_two[0]+pair_one[1]+pair_one[0]][2])
         return nearest_neighbor_energy[pair_two[1]+pair_two[0]+pair_one[1]+pair_one[0]]
     else:
         print("Nearest neighbor sequence: "+str(pair_one+pair_two)+ "not found")
@@ -150,14 +157,15 @@ def get_nearest_neighbor_energy(pair_one, pair_two):
 def get_nearest_neighbor_mismatch_energy(pair_one, pair_two):
     print("mm")
     if pair_one+pair_two in nearest_neighbor_mismatch_energy:
-        print(nearest_neighbor_mismatch_energy[pair_one+pair_two][2])
+        #print(nearest_neighbor_mismatch_energy[pair_one+pair_two][2])
         return nearest_neighbor_mismatch_energy[pair_one+pair_two]
     # if base pair sequence isn't found we can look for its reverse which will have the same energy (TCT/AGC == CGA/TCT)
     elif pair_two[1]+pair_two[0]+pair_one[1]+pair_one[0] in nearest_neighbor_mismatch_energy:
-        print(nearest_neighbor_mismatch_energy[pair_two[1]+pair_two[0]+pair_one[1]+pair_one[0]][2])
+        #print(nearest_neighbor_mismatch_energy[pair_two[1]+pair_two[0]+pair_one[1]+pair_one[0]][2])
         return nearest_neighbor_mismatch_energy[pair_two[1]+pair_two[0]+pair_one[1]+pair_one[0]]
     else:
         print("Mismatch sequence: "+str(pair_one+pair_two)+ "not found")
 
+# adding trimers -- tuples
 def add(t1, t2):
     return [t1[0]+t2[0], t1[1]+t2[1], t1[2]+t2[2]]
