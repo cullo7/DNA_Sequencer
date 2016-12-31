@@ -1,8 +1,9 @@
 C G
-A T
-G C
-T C
-C G
-A T
-G C
-G C
+G C    
+T A 
+C G 
+C T 
+G C 
+T A 
+C G 
+C G 

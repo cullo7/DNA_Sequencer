@@ -17,7 +17,7 @@ Length: 8
 Gibb's free energy: -6.73
 Entropy; -160.4
 Enthalpy: -56.5
-Temperature: -
+Temperature: 316.05
 
 *****Sample 4***** Single mismatch, C-T, bp 6
 Length: 11
