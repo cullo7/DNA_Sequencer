@@ -1,0 +1,19 @@
+1. "Nucleic acid thermodynamics." Wikipedia. Wikimedia Foundation, n.d. Web. 31 Dec. 2016.
+
+2. Allawi, Hatim T., and John Santalucia. "Thermodynamics and NMR of Internal G·T Mismatches in DNA." Biochemistry 36.34 (1997): 10581-0594. Web. 
+
+3. Allawi, H. "Thermodynamics of internal C.T mismatches in DNA." Nucleic Acids Research 26.11 (1998): 2694-701. Web.
+
+4. Santalucia, John, Hatim T. Allawi, and P. Ananda Seneviratne. "Improved Nearest-Neighbor Parameters for Predicting DNA Duplex Stability †." Biochemistry 35.11 (1996): 3555-562. Web.
+
+5. "Calculating Tm of Oligonucleotide Duplexes - IDT Biophysics." N.p., n.d. Web. 31 Dec. 2016. 
+
+6. Allawi, Hatim T., and John Santalucia. "Nearest-Neighbor Thermodynamics of Internal A·C Mismatches in DNA:  Sequence Dependence and pH Effects." Biochemistry 37.26 (1998): 9435-444. Web.
+
+7. Peyret, Nicolas, P. Ananda Seneviratne, Hatim T. Allawi, and John Santalucia. " Nearest-Neighbor Thermodynamics and NMR of DNA Sequences with Internal A‚A, C‚C, G‚G, and T‚T Mismatches†." Biochemistry 38 (1998): 3468-477. Web. 31 Dec. 2016.
+
+8. Allawi, Hatim T., and John Santalucia. "Nearest Neighbor Thermodynamic Parameters for Internal G·A Mismatches in DNA." Biochemistry 37.8 (1998): 2170-179. Web.
+
+9. Lomzov, Alexander A., Yury N. Vorobjev, and Dmitrii V. Pyshnyi. "Evaluation of the Gibbs Free Energy Changes and Melting Temperatures of DNA/DNA Duplexes Using Hybridization Enthalpy Calculated by Molecular Dynamics Simulation." The Journal of Physical Chemistry B 119.49 (2015): 15221-5234. Web.
+
+10. Santalucia, J. "A unified view of polymer, dumbbell, and oligonucleotide DNA nearest-neighbor thermodynamics." Proceedings of the National Academy of Sciences 95.4 (1998): 1460-465. Web.

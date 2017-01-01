@@ -7,8 +7,6 @@ clean-pyc:
 	find . -name '*~' -exec rm --force {} +
 
 clean-build:
-	rm -rf build/
-	rm -rf dist/
 	rm -rf __pycache__/
 
 sort:
@@ -19,16 +17,6 @@ lint:
 
 run:
 	python3 compiler.py
-
-docker-run:
-	docker build \
-		--file=./Dockerfile \
-		--tag=my_project ./
-	docker run \
-		--detach=false \
-		--name=my_project \
-		--publish=$(HOST):8080 \
-		my_project
 
 .PHONY: clean-pyc clean-build
 
@@ -41,10 +29,6 @@ help:
 	@echo "        Sort import statements."
 	@echo "    lint"
 	@echo "        Check style with flake8."
-	@echo "    test"
-	@echo "        Run py.test"
 	@echo '    run'
 	@echo '        Run the `my_project` service on your local machine.'
-	@echo '    docker-run'
-	@echo '        Build and run the `my_project` service in a Docker container.'
 
