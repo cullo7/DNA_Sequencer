@@ -36,10 +36,6 @@ nearest_neighbor_energy = {
     "CGGC": [-10.1, -25.5, -2.09],
     "GCCG": [-11.1, -28.4, -2.28],
     "GGCC": [-6.7, -15.6, -1.77],
-    "AT": [0.0, -9.0, 2.8],
-    "CG": [0.0, -5.9, 1.82],
-    "SYM": [0.0, -1.4, 0.4],
-    "TA": [0.4, 0, 0.4]
 }
 
 """
@@ -55,7 +51,7 @@ nearest_neighbor_mismatch_energy = {
     "CTGC": [-1.5, -6.1, 0.40],
     "GCCT": [2.3, 5.4, 0.62],
     "GTCC": [5.2, 13.5, 0.98],
-    "TCAT": [1.2, -20.3, 0.97],
+    "TCAT": [1.2, 0.7, 0.97],
     "TTAC": [1.0, 0.7, 0.75],
 
     # C-A
@@ -114,26 +110,74 @@ nearest_neighbor_mismatch_energy = {
 }
 
 
+"""
+    Initial and terminal base pair contributions for
+    complementary DNA duplexes
+"""
+initial_complementary_energy = {
+   "CG": [0, -5.9, 1.82],
+   "AT": [0, -9.0, 2.8],
+   "TERM_AT": [0.4, 0, 0.4],
+   "SYM": [0, -1.4, 0.4]
+}
+
+"""
+    Initial and terminal base pair contributions for
+    mismatch DNA duplexes
+"""
+initial_mismatch_energy = {
+   "CG": [0.1, -2.8, 0.98],
+   "AT": [2.3, 4.1, 1.03],
+}
+
 # Find energy contribution of head and tail base pairs in DNA sequence
-def get_initiation_energy(init_pair, term_pair):
+def get_initiation_energy(init_pair, term_pair, comp):
+    if comp:
+        return get_complementary_initial(init_pair, term_pair)
+    else:
+        return get_non_complementary_initial(init_pair, term_pair)
+
+def get_complementary_initial(init_pair, term_pair):
     total = [0.0, 0.0, 0.0]
     """
         if either the initial or terminal base pair is C-G or G-C
         we add a specified energy
     """
-    print("initial energy: " + init_pair + " " + term_pair)
-    if (init_pair == "GC" or term_pair == "CG") or \
-            (init_pair == "CG" or term_pair == "GC"):
+    if init_pair == "GC" or term_pair == "CG" or \
+            init_pair == "CG" or term_pair == "GC":
         print("Adding GC val")
-        total = add(total, nearest_neighbor_energy["CG"])
+        add(total, initial_complementary_energy["CG"])
     """
         If intial and terminal base pair are A-T or T-A then
         we add a specified enrgy value
     """
-    if (init_pair == "AT" or term_pair == "TA") and \
-            (init_pair == "TA" or term_pair == "AT"):
+    if (init_pair == "AT" or init_pair == "TA") and \
+            (term_pair == "TA" or term_pair == "AT"):
         print("Adding AT val")
-        total = add(total, nearest_neighbor_energy["AT"])
+        add(total, initial_complementary_energy["AT"])
+
+    if term_pair == "AT":
+        print("Adding A-T energy")
+        add(total, initial_complementary_energy["TERM_AT"]) 
+    print(total)
+    return total
+
+# intial and terminal energy contributions for mismatch sequence
+def get_non_complementary_initial(init_pair, term_pair):
+    total = [0.0, 0.0, 0.0]
+    print("init: "+init_pair+" term pair: "+term_pair)
+    if ord(init_pair[0]) + ord(init_pair[1]) == 149:
+        print("Adding AT val")
+        add(total, initial_mismatch_energy["AT"])
+    elif ord(init_pair[0]) + ord(init_pair[1]) == 138:
+        print("Adding CG val")
+        add(total, initial_mismatch_energy["CG"])
+    if ord(term_pair[0]) + ord(term_pair[1]) == 149:
+        print("Adding AT val")
+        add(total, initial_mismatch_energy["AT"])
+    elif ord(term_pair[0]) + ord(term_pair[1]) == 138:
+        print("Adding CG val")
+        add(total, initial_mismatch_energy["CG"])
     print(total)
     return total
 
@@ -141,19 +185,10 @@ def get_initiation_energy(init_pair, term_pair):
 # get value for symmetry when sequence is symmetrical
 def get_symmetry_g(sym):
     if(sym):
-        return nearest_neighbor_energy["SYM"]
+        print("Adding Symmetry value")
+        return initial_complementary_energy["SYM"]
     else:
         return [0, 0, 0]
-
-
-# evaluate energy contribution of the terminal pair of a sequence
-def get_end_energy(init_pair, term_pair):
-    total = [0.0, 0.0, 0.0]
-    # If terminal pair is 3' -> 5' == A -> T
-    if term_pair == "AT":
-        print("Adding A-T energy")
-        total = add(total, nearest_neighbor_energy["AT"])
-    return total
 
 
 """
@@ -195,4 +230,6 @@ def get_nearest_neighbor_mismatch_energy(pair_one, pair_two):
 
 # adding trimers -- tuples
 def add(t1, t2):
-    return [t1[0] + t2[0], t1[1] + t2[1], t1[2] + t2[2]]
+    t1[0] = round(t1[0] + t2[0], 2)
+    t1[1] = round(t1[1] + t2[1], 2)
+    t1[2] = round(t1[2] + t2[2], 2)

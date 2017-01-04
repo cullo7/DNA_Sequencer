@@ -6,8 +6,8 @@
 import math
 import sys
 from subprocess import call
+from duplex import Sequence
 
-from energy import get_end_energy as e_energy
 from energy import get_initiation_energy as i_energy
 from energy import get_nearest_neighbor_energy as nn_energy
 from energy import get_nearest_neighbor_mismatch_energy as nn_mm_energy
@@ -15,58 +15,45 @@ from energy import get_symmetry_g as get_sym
 
 # from graphic import visualize_genome as visualize
 
-# string that will hold the dna sequence
-prime_5 = ""
-prime_3 = ""
-# molarity of duplex and each strand alone
-molarity_duplex = 0
-molarity_p5 = 0
-molarity_p3 = 0
-
 """
-    Calculate melting temperature of dissociation based on nearest i
+    Calculate melting temperature of dissociation based on nearest
     neighbor method
 """
 
 
-def find_melting_temperature():
-    global prime_5, prime_3
-    # iterates over shortest strand
-    length = len(prime_5) if len(prime_5) < len(prime_3) else len(prime_3)
+def find_melting_temperature(s):
     # initial and terminal base pairs
-    initial = prime_3[0]+prime_5[0]
-    terminal = prime_3[length-1]+prime_5[length-1]
-    # create tuple that will hold [enthalpy, entropy, gibb's free energy]
-    sequence_data = [0.0, 0.0, 0.0]
-    # calculate energy values of first pair ignoring nearest neighbor
-    add(sequence_data, i_energy(initial, terminal))
+    print(s.length)
 
-    symmetrical = True
+    s.set_symmetry(True)
+    s.set_complementary(True)
 
-    for x in range(length-1):
+    t = 0
+    t1 = 0
+    sl = s.length
+    for x in range(sl - 1):
         # check for symmetry
-        if(prime_3[x]+prime_5[x] != prime_5[length-1-x]+prime_3[length-1-x]):
-            symmetrical = False
-        # calculates base-pair energy based on nearest_neighbor
+        if(s.get_3(x) + s.get_5(x) != s.get_5(sl - 1 - x) + s.get_3(sl - 1 - x)):
+            s.set_symmetry(False)
         # find complementary base pair nearest neighbor energy
-        if (not is_complement(prime_5[x], prime_3[x]) and x == 0) or \
-                (not is_complement(prime_5[x+1], prime_3[x+1])
-                    and x+1 == length):
-            # We cannot evaluate a mismatch on the end of a sequence yet
-            continue
-        elif is_complement(prime_5[x+1], prime_3[x+1]) and \
-                is_complement(prime_3[x], prime_5[x]):
-            # print(prime_3[x]+prime_3[x+1] +", "+ prime_5[x]+prime_5[x+1])
-            add(sequence_data, nn_energy(prime_3[x:x+2], prime_5[x:x+2]))
+        if is_complement(s.get_5(x +1), s.get_3(x +1)) and is_complement(s.get_3(x), s.get_5(x)):
+            # print(s.three_prime[x]+s.three_prime[x+1] +", "+ s.five_prime[x]+s.five_prime[x+1])
+            s.add(nn_energy(s.get_3_s(x,x + 2), s.get_5_s(x, x + 2)))
         # look for base pair inverse mismatch value
         else:
-            # print(prime_3[x]+prime_3[x+1] +", "+ prime_5[x]+prime_5[x+1])
-            add(sequence_data, nn_mm_energy(prime_3[x:x+2], prime_5[x:x+2]))
+            # print(s.three_prime[x]+s.three_prime[x+1] +", "+ s.five_prime[x]+s.five_prime[x+1])
+            s.add(nn_mm_energy( s.get_3_s(x, x + 2), s.get_5_s(x, x + 2)))
+            s.set_complementary(False)
+        t = s.energy
+        print(s.get_3_s(x, x + 2) + " " + s.get_5_s(x, x + 2))
+        print("E: " + str(round((t - t1), 2)))
+        print(s.energy)
+        t1 = t
+    # if s is symmetrical, add symmetry value
+    s.add(get_sym(s.symmetry))
 
-    # checks for terminal 5'-> 3' T-A base pair
-    add(sequence_data, e_energy(initial, terminal))
-    # if sequence is symmetrical, add symmetry value
-    add(sequence_data, get_sym(symmetrical))
+    # calculate energy values of first pair ignoring nearest neighbor
+    s.add(i_energy(s.initial, s.terminal, s.complementary))
 
     # Account for Other factors that will affect temperature/gibbs energy
 
@@ -79,10 +66,8 @@ def find_melting_temperature():
         double-stranded nucleic acid, [AB]initial. This gives an expression for
         the melting point of a nucleic acid duplex of
     """
-    AB_mol = 1
-    # Mg_mol = .5
     R = 8.3144598
-    temperature = -(sequence_data[2])/(R*math.log(AB_mol/2, math.exp(1)))
+    s.set_temperature(-(s.energy) / (R * math.log(s.duplex_molarity / 2, math.exp(1))))
 
     """
     temperature calculation with salt
@@ -99,7 +84,7 @@ def find_melting_temperature():
                 (g*math.pow(math.log(Mg_mol, math.exp(1)), 2))))
     """
 
-    return sequence_data+[length]+[temperature]
+    return s
 
 
 """
@@ -108,10 +93,9 @@ def find_melting_temperature():
 
 
 def parse_genome(number):
-    global prime_5, prime_3
     prime_5 = ""
     prime_3 = ""
-    with open("dna_samples/dna_sample_"+str(number)+".txt") as f:
+    with open("dna_samples/dna_sample_" + str(number) + ".txt") as f:
         seq = f.read()
     seq = seq.split()
     even = True
@@ -123,6 +107,7 @@ def parse_genome(number):
             else:
                 prime_5 += seq[x]
                 even = True
+    return Sequence(prime_3, prime_5, .004)
 
 
 # Show help menu
@@ -137,13 +122,13 @@ def help():
 
 # runs program on dna sequence and compares it to expected value
 def test(number):
-    parse_genome(number)
-    data = find_melting_temperature()
-    print("Length: " + str(round(data[3], 2)))
-    print("Gibb's free energy: " + str(round(data[2], 2)))
-    print("Entropy; " + str(round(data[1], 2)))
-    print("Enthalpy: " + str(round(data[0], 2)))
-    print("Temperature: " + str(round(data[4], 2)))
+    sequence = parse_genome(number)
+    data = find_melting_temperature(sequence)
+    print("Length: " + str(data.length))
+    print("Gibb's free energy: " + str(data.energy))
+    print("Entropy; " + str(data.entropy))
+    print("Enthalpy: " + str(data.enthalpy))
+    print("Temperature: " + str(data.temperature))
     # print correct result
     show_results(number)
 
@@ -169,7 +154,7 @@ def details():
 def show(number):
     print("Sequence\n")
     # print dna sequence
-    with open("dna_samples/dna_sample_"+str(number)+".txt") as f:
+    with open("dna_samples/dna_sample_" + str(number) + ".txt") as f:
         print(f.read())
     # printing expected output for DNA sample
     show_results(number)
@@ -178,29 +163,22 @@ def show(number):
 # show expected results on file
 def show_results(num):
     print("Expected Output:")
-    start = ((int(num)-1)*7)+1
-    end = start+5
-    s = str(start)+","+str(end)+"p"
+    start = ((int(num) - 1) * 7) + 1
+    end = start + 5
+    s = str(start) + "," + str(end) + "p"
     call(["sed", "-n", s, "dna_samples/catalog.txt"])
 
 
 # show all sample sequences
 def show_all(n):
     for x in range(n):
-        show(x+1)
+        show(x + 1)
 
 
 # test all samples
 def test_all(n):
     for x in range(n):
-            test(x+1)
-
-
-# add tuples of size 3
-def add(t1, t2):
-    t1[0] += t2[0]
-    t1[1] += t2[1]
-    t1[2] += t2[2]
+        test(x + 1)
 
 
 # test if bases are complements
@@ -214,38 +192,63 @@ def is_complement(b1, b2):
 
 if __name__ == '__main__':
 
+    if len(sys.argv) > 2:
+        print("Program only accepts two total command line arguments")
+        print("usage: python compiler.py")
+        sys.exit(0)
+
     details()
 
     # number of samples
     with open("dna_samples/catalog.txt") as f:
-        samples = int(sum(1 for _ in f)/7)
+        samples = int(sum(1 for _ in f) / 7)
 
     # Command prompt loop
     while True:
-        command = (input("[DNA_compiler]: ")).strip()
-        if command == "help":
+        command = input("[DNA_compiler]: ").strip().split()
+        if command[0] == "help" or command[0] == "h":
             help()
-        elif command == "test":
-            file_name = (input("select a number from 1 and 25: ")).strip()
-            if file_name.isdigit():
-                test(file_name)
-            elif file_name == "all":
-                test_all(samples)
+        elif command[0] == "test" or command[0] == "t":
+            if len(command) > 1:
+                if command[1] == "all":
+                    test_all(samples)
+                if not command[1].isdigit():
+                    print("2nd argument has to be an integer")
+                elif not int(command[1]) < 26 and not int(command[1]) > 0:
+                    print("2nd argument has to be an integer between 0 and 26")
+                else:
+                    test(command[1])
             else:
-                print("Invalid input: an integer between 1 and 25 required")
-                continue
-        elif command == "show":
-            file_name = (input("select a number from 1 and 25: ")).strip()
-            if file_name.isdigit():
-                show(file_name)
-            elif file_name == "all":
-                show_all(samples)
+                file_name = input("select a number from 1 and 25: ").strip()
+                if file_name.isdigit():
+                    test(file_name)
+                elif file_name == "all":
+                    test_all(samples)
+                else:
+                    print("Integer between 0 and 26 required")
+                    continue
+        elif command[0] == "show" or command[0] == "s":
+            if len(command) > 1:
+                if command[1] == "all":
+                    show_all(samples)
+                if not command[1].isdigit():
+                    print("2nd argument has to be an integer")
+                elif int(command[1]) > 25 or int(command[1]) < 1:
+                    print("2nd argument has to be an integer between 0 and 26")
+                else:
+                    show(command[1])
             else:
-                print("Invalid input: an integer between 1 and 25 required")
-                continue
-        elif command == "exit":
+                file_name = input("select a number from 1 and 25: ").strip()
+                if file_name.isdigit():
+                    show(file_name)
+                elif file_name == "all":
+                    show_all(samples)
+                else:
+                    print("Integer between 0 and 26 required")
+                    continue
+        elif command[0] == "exit" or command[0] == "e" or command[0] == "quit":
             sys.exit()
-        elif command == "details":
+        elif command[0] == "details" or command[0] == "d":
             details()
         else:
             print("Invalid command: enter help for command menu")

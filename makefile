@@ -2,9 +2,9 @@ HOST=127.0.0.1
 TEST_PATH=./
 
 clean-pyc:
-	find . -name '*.pyc' -exec rm --force {} +
-	find . -name '*.pyo' -exec rm --force {} +
-	find . -name '*~' -exec rm --force {} +
+	rm -rf '*.pyc'
+	rm -rf '*.pyo'
+	rm -rf '*~'
 
 clean-build:
 	rm -rf __pycache__/
@@ -17,6 +17,9 @@ lint:
 
 run:
 	python3 compiler.py
+
+irun:
+	python3 compiler.py < input.txt
 
 .PHONY: clean-pyc clean-build
 
