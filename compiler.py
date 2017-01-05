@@ -22,10 +22,6 @@ from energy import get_symmetry_g as get_sym
 
 
 def find_melting_temperature(s):
-    # initial and terminal base pairs
-    print(s.length)
-
-    s.set_symmetry(True)
     s.set_complementary(True)
 
     t = 0
@@ -34,7 +30,7 @@ def find_melting_temperature(s):
     for x in range(sl - 1):
         # check for symmetry
         if(s.get_3(x) + s.get_5(x) != s.get_5(sl - 1 - x) + s.get_3(sl - 1 - x)):
-            s.set_symmetry(False)
+            s.set_complementary(False)
         # find complementary base pair nearest neighbor energy
         if is_complement(s.get_5(x +1), s.get_3(x +1)) and is_complement(s.get_3(x), s.get_5(x)):
             # print(s.three_prime[x]+s.three_prime[x+1] +", "+ s.five_prime[x]+s.five_prime[x+1])
@@ -44,16 +40,16 @@ def find_melting_temperature(s):
             # print(s.three_prime[x]+s.three_prime[x+1] +", "+ s.five_prime[x]+s.five_prime[x+1])
             s.add(nn_mm_energy( s.get_3_s(x, x + 2), s.get_5_s(x, x + 2)))
             s.set_complementary(False)
-        t = s.energy
+        t = s.get_energy()
         print(s.get_3_s(x, x + 2) + " " + s.get_5_s(x, x + 2))
         print("E: " + str(round((t - t1), 2)))
-        print(s.energy)
+        print(s.get_energy())
         t1 = t
     # if s is symmetrical, add symmetry value
-    s.add(get_sym(s.symmetry))
+    s.add(get_sym(s.get_complementary()))
 
     # calculate energy values of first pair ignoring nearest neighbor
-    s.add(i_energy(s.initial, s.terminal, s.complementary))
+    s.add(i_energy(s.get_initial(), s.get_terminal(), s.get_complementary()))
 
     # Account for Other factors that will affect temperature/gibbs energy
 
@@ -66,8 +62,14 @@ def find_melting_temperature(s):
         double-stranded nucleic acid, [AB]initial. This gives an expression for
         the melting point of a nucleic acid duplex of
     """
-    R = 8.3144598
-    s.set_temperature(-(s.energy) / (R * math.log(s.duplex_molarity / 2, math.exp(1))))
+    R = 1.987
+    s.set_temperature((s.get_enthalpy()*1000) / (s.get_entropy() + (R * math.log(s.get_oligo_molarity() , math.exp(1)))))
+
+    print("========")
+    print(s.get_enthalpy())
+    print(s.get_entropy())
+    print(s.get_oligo_molarity())
+    print("========")
 
     """
     temperature calculation with salt

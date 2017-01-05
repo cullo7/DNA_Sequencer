@@ -1,0 +1,8 @@
+1. Calculate temperature - assign correct molarity
+2. pH distinctions
+2. Two or multiple state
+3. Make UI
+  - visualize dna strand
+  - complementarity
+4. Account for 20+ bp means likely not a two state transition
+5. Learning Algorithm

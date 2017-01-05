@@ -1,6 +1,12 @@
 HOST=127.0.0.1
 TEST_PATH=./
 
+run:
+	python3 compiler.py
+
+clean:
+	make clean-pyc && make clean-build
+
 clean-pyc:
 	rm -rf '*.pyc'
 	rm -rf '*.pyo'
@@ -14,9 +20,6 @@ sort:
 
 lint:
 	flake8 --exclude=.tox
-
-run:
-	python3 compiler.py
 
 irun:
 	python3 compiler.py < input.txt
