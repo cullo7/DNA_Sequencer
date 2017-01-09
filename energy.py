@@ -112,73 +112,43 @@ nearest_neighbor_mismatch_energy = {
 
 """
     Initial and terminal base pair contributions for
-    complementary DNA duplexes
+    mismatch DNA duplexes
 """
-initial_complementary_energy = {
-   "CG": [0, -5.9, 1.82],
-   "AT": [0, -9.0, 2.8],
+initial_energy = {
+   "CG": [0.1, -2.8, 0.98],
+   "AT": [2.3, 4.1, 1.03],
    "TERM_AT": [0.4, 0, 0.4],
    "SYM": [0, -1.4, 0.4]
 }
 
-"""
-    Initial and terminal base pair contributions for
-    mismatch DNA duplexes
-"""
-initial_mismatch_energy = {
-   "CG": [0.1, -2.8, 0.98],
-   "AT": [2.3, 4.1, 1.03],
-}
-
 # Find energy contribution of head and tail base pairs in DNA sequence
 def get_initiation_energy(init_pair, term_pair, comp):
-    if comp:
-        return get_complementary_initial(init_pair, term_pair)
-    else:
-        return get_non_complementary_initial(init_pair, term_pair)
-
-def get_complementary_initial(init_pair, term_pair):
-    total = [0.0, 0.0, 0.0]
-    """
-        if either the initial or terminal base pair is C-G or G-C
-        we add a specified energy
-    """
-    if init_pair == "GC" or term_pair == "CG" or \
-            init_pair == "CG" or term_pair == "GC":
-        print("Adding GC val")
-        add(total, initial_complementary_energy["CG"])
-    """
-        If intial and terminal base pair are A-T or T-A then
-        we add a specified enrgy value
-    """
-    if (init_pair == "AT" or init_pair == "TA") and \
-            (term_pair == "TA" or term_pair == "AT"):
-        print("Adding AT val")
-        add(total, initial_complementary_energy["AT"])
-
-    if term_pair == "AT":
-        print("Adding A-T energy")
-        add(total, initial_complementary_energy["TERM_AT"]) 
-    print(total)
-    return total
-
-# intial and terminal energy contributions for mismatch sequence
-def get_non_complementary_initial(init_pair, term_pair):
     total = [0.0, 0.0, 0.0]
     print("init: "+init_pair+" term pair: "+term_pair)
-    if ord(init_pair[0]) + ord(init_pair[1]) == 149:
+    """
+        Check if initial is A-T or G-C base pair
+    """
+    if init_pair == "AT" or init_pair == "TA":
         print("Adding AT val")
-        add(total, initial_mismatch_energy["AT"])
-    elif ord(init_pair[0]) + ord(init_pair[1]) == 138:
+        add(total, initial_energy["AT"])
+    elif init_pair == "GC" or init_pair == "CG":
         print("Adding CG val")
-        add(total, initial_mismatch_energy["CG"])
-    if ord(term_pair[0]) + ord(term_pair[1]) == 149:
+        add(total, initial_energy["CG"])
+    """
+        Check if terminal pair is A-T or G-C base pair 
+    """
+    if term_pair == "AT" or term_pair == "TA":
         print("Adding AT val")
-        add(total, initial_mismatch_energy["AT"])
-    elif ord(term_pair[0]) + ord(term_pair[1]) == 138:
+        add(total, initial_energy["AT"])
+    elif term_pair == "CG" or term_pair == "GC":
         print("Adding CG val")
-        add(total, initial_mismatch_energy["CG"])
-    print(total)
+        add(total, initial_energy["CG"])
+    """
+        Check for terminal 3'->5' A-T
+    """
+    if term_pair == "AT":
+        print("Adding A-T energy")
+        add(total, initial_energy["TERM_AT"]) 
     return total
 
 
@@ -186,7 +156,7 @@ def get_non_complementary_initial(init_pair, term_pair):
 def get_symmetry_g(sym):
     if(sym):
         print("Adding Symmetry value")
-        return initial_complementary_energy["SYM"]
+        return initial_energy["SYM"]
     else:
         return [0, 0, 0]
 
@@ -198,7 +168,7 @@ def get_symmetry_g(sym):
 
 
 def get_nearest_neighbor_energy(pair_one, pair_two):
-    print("nn")
+    #print("nn")
     regular = pair_one + pair_two
     inverse = pair_two[1] + pair_two[0] + pair_one[1] + pair_one[0]
     if regular in nearest_neighbor_energy:
@@ -214,7 +184,7 @@ def get_nearest_neighbor_energy(pair_one, pair_two):
 
 # Energy contribution from mismatch trimer(e.g. ATA/TTT)
 def get_nearest_neighbor_mismatch_energy(pair_one, pair_two):
-    print("mm")
+    #print("mm")
     regular = pair_one + pair_two
     inverse = pair_two[1] + pair_two[0] + pair_one[1] + pair_one[0]
     if regular in nearest_neighbor_mismatch_energy:

@@ -6,3 +6,4 @@
   - complementarity
 4. Account for 20+ bp means likely not a two state transition
 5. Learning Algorithm
+6. mismatches on endpoint

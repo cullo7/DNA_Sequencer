@@ -28,6 +28,11 @@ def find_melting_temperature(s):
     t1 = 0
     sl = s.length
     for x in range(sl - 1):
+        t = s.get_energy()
+        print("E: " + str(round((t - t1), 2)))
+        print(s.get_energy())
+        print(s.get_3_s(x, x + 2) + " " + s.get_5_s(x, x + 2))
+        t1 = t
         # check for symmetry
         if(s.get_3(x) + s.get_5(x) != s.get_5(sl - 1 - x) + s.get_3(sl - 1 - x)):
             s.set_complementary(False)
@@ -40,14 +45,11 @@ def find_melting_temperature(s):
             # print(s.three_prime[x]+s.three_prime[x+1] +", "+ s.five_prime[x]+s.five_prime[x+1])
             s.add(nn_mm_energy( s.get_3_s(x, x + 2), s.get_5_s(x, x + 2)))
             s.set_complementary(False)
-        t = s.get_energy()
-        print(s.get_3_s(x, x + 2) + " " + s.get_5_s(x, x + 2))
-        print("E: " + str(round((t - t1), 2)))
-        print(s.get_energy())
-        t1 = t
+        
     # if s is symmetrical, add symmetry value
     s.add(get_sym(s.get_complementary()))
 
+    print("E: "+str(s.get_energy()))
     # calculate energy values of first pair ignoring nearest neighbor
     s.add(i_energy(s.get_initial(), s.get_terminal(), s.get_complementary()))
 
@@ -64,12 +66,6 @@ def find_melting_temperature(s):
     """
     R = 1.987
     s.set_temperature((s.get_enthalpy()*1000) / (s.get_entropy() + (R * math.log(s.get_oligo_molarity() , math.exp(1)))))
-
-    print("========")
-    print(s.get_enthalpy())
-    print(s.get_entropy())
-    print(s.get_oligo_molarity())
-    print("========")
 
     """
     temperature calculation with salt
@@ -131,6 +127,7 @@ def test(number):
     print("Entropy; " + str(data.entropy))
     print("Enthalpy: " + str(data.enthalpy))
     print("Temperature: " + str(data.temperature))
+    print()
     # print correct result
     show_results(number)
 
@@ -181,6 +178,7 @@ def show_all(n):
 def test_all(n):
     for x in range(n):
         test(x + 1)
+        print()
 
 
 # test if bases are complements
@@ -208,13 +206,15 @@ if __name__ == '__main__':
     # Command prompt loop
     while True:
         command = input("[DNA_compiler]: ").strip().split()
-        if command[0] == "help" or command[0] == "h":
+        if len(command)  < 1:
+            print("Invalid command: enter help for command menu")
+        elif command[0] == "help" or command[0] == "h":
             help()
         elif command[0] == "test" or command[0] == "t":
             if len(command) > 1:
                 if command[1] == "all":
                     test_all(samples)
-                if not command[1].isdigit():
+                elif not command[1].isdigit():
                     print("2nd argument has to be an integer")
                 elif not int(command[1]) < 26 and not int(command[1]) > 0:
                     print("2nd argument has to be an integer between 0 and 26")
@@ -233,7 +233,7 @@ if __name__ == '__main__':
             if len(command) > 1:
                 if command[1] == "all":
                     show_all(samples)
-                if not command[1].isdigit():
+                elif not command[1].isdigit():
                     print("2nd argument has to be an integer")
                 elif int(command[1]) > 25 or int(command[1]) < 1:
                     print("2nd argument has to be an integer between 0 and 26")
@@ -248,7 +248,7 @@ if __name__ == '__main__':
                 else:
                     print("Integer between 0 and 26 required")
                     continue
-        elif command[0] == "exit" or command[0] == "e" or command[0] == "quit":
+        elif command[0] == "exit" or command[0] == "e" or command[0] == "quit" or command[0] == "q":
             sys.exit()
         elif command[0] == "details" or command[0] == "d":
             details()
