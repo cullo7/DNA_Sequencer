@@ -6,7 +6,7 @@ G C
 A T
 G C
 A T
-A T
+A G
 C G
 G C
 C G

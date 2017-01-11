@@ -2,8 +2,8 @@ C G
 G C
 A T
 T A
-T A
-A A 
+A A
+A T 
 A T
 T A
 C G

@@ -25,7 +25,7 @@ base_stability_energy = {
     Gibb's free energy from each adjacent base pair using the nearest neighbor
     approach from https://en.wikipedia.org/wiki/Nucleic_acid_thermodynamics
 """
-nearest_neighbor_energy = {
+backup_nearest_neighbor_energy = {
     "AATT": [-8.4, -23.6, -1.02],
     "ATTA": [-6.5, -18.8, -0.73],
     "TAAT": [-6.3, -18.5, -0.60],
@@ -35,7 +35,20 @@ nearest_neighbor_energy = {
     "GACT": [-7.7, -20.3, -1.46],
     "CGGC": [-10.1, -25.5, -2.09],
     "GCCG": [-11.1, -28.4, -2.28],
-    "GGCC": [-6.7, -15.6, -1.77],
+    "GGCC": [-6.7, -15.6, -1.77]
+}
+
+nearest_neighbor_energy = {
+    "AATT": [-7.9, -22.2, -1.00],
+    "ATTA": [-7.2, -20.4, -0.88],
+    "TAAT": [-7.2, -21.3, -0.58],
+    "CAGT": [-8.5, -22.7, -1.45],
+    "GTCA": [-8.4, -22.4, -1.44],
+    "CTGA": [-7.8, -21.0, -1.28],
+    "GACT": [-8.2, -22.2, -1.30],
+    "CGGC": [-10.6, -27.2, -2.17],
+    "GCCG": [-9.8, -24.4, -2.24],
+    "GGCC": [-8.0, -19.9,-1.84]
 }
 
 """
@@ -106,7 +119,7 @@ nearest_neighbor_mismatch_energy = {
     "ATTT": [-2.7, -10.8, 0.69],
     "CTGT": [-5.0, -15.8, -0.12],
     "GTCT": [-2.2, -8.4, 0.45],
-    "TTAT": [0.2, -1.5, 0.68],
+    "TTAT": [0.2, -1.5, 0.68]
 }
 
 
