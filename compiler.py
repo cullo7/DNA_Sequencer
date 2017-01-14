@@ -1,6 +1,6 @@
 """
     Compiler for a DNA duplex to calculate the dissociation and
-    association melting temperature
+    association melting temperaeure
 """
 
 import math
@@ -29,9 +29,9 @@ def find_melting_temperature(s):
     sl = s.length
     for x in range(sl - 1):
         t = s.get_energy()
-        print("E: " + str(round((t - t1), 2)))
-        print(s.get_energy())
-        print(s.get_3_s(x, x + 2) + " " + s.get_5_s(x, x + 2))
+        # print("E: " + str(round((t - t1), 2)))
+        # print(s.get_energy())
+        # print(s.get_3_s(x, x + 2) + " " + s.get_5_s(x, x + 2))
         t1 = t
         # check for symmetry
         if(s.get_3(x) + s.get_5(x) != s.get_5(sl - 1 - x) + s.get_3(sl - 1 - x)):
@@ -49,7 +49,7 @@ def find_melting_temperature(s):
     # if s is symmetrical, add symmetry value
     s.add(get_sym(s.get_complementary()))
 
-    print("E: "+str(s.get_energy()))
+    # print("E: "+str(s.get_energy()))
     # calculate energy values of first pair ignoring nearest neighbor
     s.add(i_energy(s.get_initial(), s.get_terminal(), s.get_complementary()))
 
@@ -189,68 +189,97 @@ def is_complement(b1, b2):
         return True
     return False
 
-
-if __name__ == '__main__':
-
-    if len(sys.argv) > 2:
-        print("Program only accepts two total command line arguments")
-        print("usage: python compiler.py")
-        sys.exit(0)
-
-    details()
-
-    # number of samples
-    with open("dna_samples/catalog.txt") as f:
-        samples = int(sum(1 for _ in f) / 7)
-
-    # Command prompt loop
-    while True:
-        command = input("[DNA_compiler]: ").strip().split()
-        if len(command)  < 1:
-            print("Invalid command: enter help for command menu")
-        elif command[0] == "help" or command[0] == "h":
-            help()
-        elif command[0] == "test" or command[0] == "t":
-            if len(command) > 1:
-                if command[1] == "all":
-                    test_all(samples)
-                elif not command[1].isdigit():
-                    print("2nd argument has to be an integer")
-                elif not int(command[1]) < 26 and not int(command[1]) > 0:
-                    print("2nd argument has to be an integer between 0 and 26")
-                else:
-                    test(command[1])
+def read_file(file_name):
+    prime_5 = ""
+    prime_3 = ""
+    with open(file_name) as f:
+        seq = f.read()
+    # output = open(file_name[:len(file_name)-4]+"_output.txt", 'w+')
+    print("Writing file")
+    output = open("test.txt", "w")
+    output.write("Hello")
+    """
+    seq = seq.split()
+    delimit = False
+    for x in range(len(seq)):
+        for i in range(len(seq[0])):
+            if seq[x][i] == '/':
+                delimit = True
+            elif delimit:
+                prime_5 += seq[x][i]
             else:
-                file_name = input("select a number from 1 and 25: ").strip()
-                if file_name.isdigit():
-                    test(file_name)
-                elif file_name == "all":
-                    test_all(samples)
+                prime_3 += seq[x][i]
+        s = find_melting_temperature(Sequence(prime_3, prime_5, .004))
+        output.write(seq[x] + "- E: " + s.energy + ", H: " + s.enthalpy + ", S: " + s.entropy)
+    """
+
+
+if __name__ == '__main_':
+
+    print("main")
+    if sys.argv[0] == "compiler.py" and sys.argv[1] == "-f" and len(sys.argv) == 3:
+        print("Caught")
+        read_file(sys.argv[2])
+    else:
+        if len(sys.argv) > 1:
+            print("Program only accepts two total command line arguments")
+            print("usage: python compiler.py")
+            sys.exit(0)
+
+        details()
+
+        # number of samples
+        with open("dna_samples/catalog.txt") as f:
+            samples = int(sum(1 for _ in f) / 7)
+
+        # Command prompt loop
+        while True:
+            command = input("[DNA_compiler]: ").strip().split()
+            if len(command)  < 1:
+                print("Invalid command: enter help for command menu")
+            elif command[0] == "help" or command[0] == "h":
+                help()
+            elif command[0] == "test" or command[0] == "t":
+                if len(command) > 1:
+                    if command[1] == "all":
+                        test_all(samples)
+                    elif not command[1].isdigit():
+                        print("2nd argument has to be an integer")
+                    elif not int(command[1]) < 26 and not int(command[1]) > 0:
+                        print("2nd argument has to be an integer between 0 and 26")
+                    else:
+                        test(command[1])
                 else:
-                    print("Integer between 0 and 26 required")
-                    continue
-        elif command[0] == "show" or command[0] == "s":
-            if len(command) > 1:
-                if command[1] == "all":
-                    show_all(samples)
-                elif not command[1].isdigit():
-                    print("2nd argument has to be an integer")
-                elif int(command[1]) > 25 or int(command[1]) < 1:
-                    print("2nd argument has to be an integer between 0 and 26")
+                    file_name = input("select a number from 1 and 25: ").strip()
+                    if file_name.isdigit():
+                        test(file_name)
+                    elif file_name == "all":
+                        test_all(samples)
+                    else:
+                        print("Integer between 0 and 26 required")
+                        continue
+            elif command[0] == "show" or command[0] == "s":
+                if len(command) > 1:
+                    if command[1] == "all":
+                        show_all(samples)
+                    elif not command[1].isdigit():
+                        print("2nd argument has to be an integer")
+                    elif int(command[1]) > 25 or int(command[1]) < 1:
+                        print("2nd argument has to be an integer between 0 and 26")
+                    else:
+                        show(command[1])
                 else:
-                    show(command[1])
+                    file_name = input("select a number from 1 and 25: ").strip()
+                    if file_name.isdigit():
+                        show(file_name)
+                    elif file_name == "all":
+                        show_all(samples)
+                    else:
+                        print("Integer between 0 and 26 required")
+                        continue
+            elif command[0] == "exit" or command[0] == "e" or command[0] == "quit" or command[0] == "q":
+                sys.exit()
+            elif command[0] == "details" or command[0] == "d":
+                details()
             else:
-                file_name = input("select a number from 1 and 25: ").strip()
-                if file_name.isdigit():
-                    show(file_name)
-                elif file_name == "all":
-                    show_all(samples)
-                else:
-                    print("Integer between 0 and 26 required")
-                    continue
-        elif command[0] == "exit" or command[0] == "e" or command[0] == "quit" or command[0] == "q":
-            sys.exit()
-        elif command[0] == "details" or command[0] == "d":
-            details()
-        else:
-            print("Invalid command: enter help for command menu")
+                print("Invalid command: enter help for command menu")

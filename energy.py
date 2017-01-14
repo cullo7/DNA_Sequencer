@@ -137,30 +137,30 @@ initial_energy = {
 # Find energy contribution of head and tail base pairs in DNA sequence
 def get_initiation_energy(init_pair, term_pair, comp):
     total = [0.0, 0.0, 0.0]
-    print("init: "+init_pair+" term pair: "+term_pair)
+    # print("init: "+init_pair+" term pair: "+term_pair)
     """
         Check if initial is A-T or G-C base pair
     """
     if init_pair == "AT" or init_pair == "TA":
-        print("Adding AT val")
+        # print("Adding AT val")
         add(total, initial_energy["AT"])
     elif init_pair == "GC" or init_pair == "CG":
-        print("Adding CG val")
+        # print("Adding CG val")
         add(total, initial_energy["CG"])
     """
         Check if terminal pair is A-T or G-C base pair 
     """
     if term_pair == "AT" or term_pair == "TA":
-        print("Adding AT val")
+        # print("Adding AT val")
         add(total, initial_energy["AT"])
     elif term_pair == "CG" or term_pair == "GC":
-        print("Adding CG val")
+        # print("Adding CG val")
         add(total, initial_energy["CG"])
     """
         Check for terminal 3'->5' A-T
     """
     if term_pair == "AT":
-        print("Adding A-T energy")
+        # print("Adding A-T energy")
         add(total, initial_energy["TERM_AT"]) 
     return total
 
@@ -168,7 +168,7 @@ def get_initiation_energy(init_pair, term_pair, comp):
 # get value for symmetry when sequence is symmetrical
 def get_symmetry_g(sym):
     if(sym):
-        print("Adding Symmetry value")
+        # print("Adding Symmetry value")
         return initial_energy["SYM"]
     else:
         return [0, 0, 0]
