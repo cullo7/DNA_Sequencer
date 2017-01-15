@@ -234,20 +234,29 @@ def multiple():
     print("Example 3: 3 -- three matches")
     print("Example 4: R3MR3 -- three random matches , a mismatch and three more random matches")
     print("Enter 'quit', 'exit', or 'q' to exit")
+    print("Would you like to store all results in the same file or separate files?")
     print()
+    same_file = False
+    choice = input("(y or n): ")
+    if choice == "y" or choice == "yes":
+        same_file = True
+
     i = 1
-    sequence = ""
+    sequence = input(str(i) + ": ")
     while sequence != "exit" and sequence != "quit" and sequence != "q":
-        sequence = input(str(i) + ": ")
+        print("seq: "+ str(sequence))
         if sanitize_m(sequence):
             s = seudo_sequence_converter(sequence)
-            run_sequences(add_mismatches(s), sequence)
+            print("s: "+ str(s))
+            run_sequences(add_mismatches(s), sequence, same_file)
         i += 1
+        sequence = input(str(i) + ": ")
 
 # sanitize multiple sequence input
 def sanitize_m(input_m):
     for x, item in enumerate(input_m):  
         if item != "M" and item != "R" and not item.isdigit():
+            print("item: "+ str(item))
             print("Input must be either a n 'M', 'R', or a number")
             return False
         elif item == "M":
@@ -266,21 +275,42 @@ def seudo_sequence_converter(sequence):
     strands = ["","","",""]
     random = False
     sequences = []
-    for x, item in enumerate(sequence):	
-        if item == "R":
+    x = 0
+    while x < len(sequence):	
+        if sequence[x] == "R":
             random = True
-        elif item.isdigit() and random:
-            add_stretch_rand(strands, item)
+        elif sequence[x].isdigit() and random:
+            temp = sequence[x]
+            i = 1
+            for i in range(1, len(sequence)-x+2):
+                if not sequence[x:x+i].isdigit():
+                    break
+                else:
+                    temp = sequence[x:x+i]
+            
+            add_stretch_rand(strands, temp)
+            print("i" + str(i))
+            x+= (i-2)
             random = False
-        elif item.isdigit():
-            add_stretch(strands, item)
-        elif item == "M":
+        elif sequence[x].isdigit():
+            temp = sequence[x]
+            i = 1
+            for i in range(1, len(sequence)-x):
+                if not sequence[x:x+i].isdigit():
+                    break
+                else:
+                    temp = sequence[x:x+i]
+            
+            add_stretch(strands, temp)
+            x+= (i-2)
+        elif sequence[x] == "M":
             strands[0] += "M"
             strands[1] += "M"
             strands[2] += "M"
             strands[3] += "M"
         else:
             print("seudo-sequence character not recognized")
+        x+=1
     sequences.append(strands[0] + '/' + strands[1])
     sequences.append(strands[2] + '/' + strands[3])
     return sequences
@@ -307,15 +337,20 @@ def add_stretch_rand(strands,  number):
     return strands
 
 # find energy, enthalphy, entropy and temperature of sequences
-def run_sequences(sequences, name):
+def run_sequences(sequences, name, same_file):
     # create output file with filename + "output.txt"
-    output = open(name + "_output.txt", 'w')
+    if same_file == True:
+        output = open("output.txt", 'a')
+    else:
+        output = open(name + "_output.txt", 'w')
     for x, sequence in enumerate(sequences):
-        prime_3 = sequence.split('/')[0]
-        prime_5 = sequence.split('/')[1]
-        s = find_melting_temperature(Sequence(prime_3, prime_5, .004))
-        output.write(str(sequence) + '\t' + fformat(s.energy) + fformat(s.enthalpy) + fformat(s.entropy))
-        output.write('\n')
+        if not (x != 0 and sequences[x] == sequences[x-1]):
+            prime_3 = sequence.split('/')[0]
+            prime_5 = sequence.split('/')[1]
+            s = find_melting_temperature(Sequence(prime_3, prime_5, .004))
+            output.write('\n'+name+ '\n\n')
+            output.write(str(sequence) + '\t' + fformat(s.energy) + fformat(s.enthalpy) + fformat(s.entropy) + fformat(s.temperature) + str(len(prime_3)))
+            output.write('\n')
 
 # add tuples of variable size
 def add_tuples(t1, t2, size):
