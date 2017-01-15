@@ -6,8 +6,9 @@
 import random
 import math
 import sys
-from subprocess import call
 from duplex import Sequence
+from termcolor import colored
+from subprocess import call
 
 from energy import get_initiation_energy as i_energy
 from energy import get_nearest_neighbor_energy as nn_energy
@@ -112,11 +113,34 @@ def parse_genome(number):
 def help():
     print("Commands:")
     print("")
-    print("help: Show help menu")
-    print("test: Run program on sequence and compare to expected results")
-    print("show: Show sequence and expected result for that sequence")
-    print("details: Explains experimental conditions and procedure")
-    print("multiple: Enter menu for running and recording multiple sequences\n")
+    print("help(): Show help menu")
+    print("test(): Run program on sequence and compare to expected results")
+    print("show(): Show sequence and expected result for that sequence")
+    print("details(): Explains experimental conditions and procedure")
+    print("multiple(): Enter menu for running and recording multiple sequences\n")
+
+
+# prints intro title
+def title():
+    width = 125
+    red = 'red'
+    green = 'green'
+    print('\n')
+    print(colored('#' * 127, green))
+    print('\n')
+    print(colored(" /=\              ______  __   __     ___                    /=\  ", red).center(width, ' '))
+    print(colored("/===\             |  _  \ | \ | |    / _ \                  /===\ ", red).center(width, ' '))
+    print(colored("|===|             | | | | |  \| |   / /_\ \                 |===| ", red).center(width, ' '))
+    print(colored("\===/             | |_| | | |\  |  / /___\ \                \===/ ", red).center(width, ' '))
+    print(colored(" \=/              |_____/ |_| \_| /_/     \_\                \=/  ", red).center(width, ' '))
+    print(colored("  X     ___   ___   _      _  ____   _   _     ___   ___      X   ", red).center(width, ' '))
+    print(colored(" /=\   /  _\ /   \ | \    / | |   | | | | |   | __| | . |    /=\  ", red).center(width, ' '))
+    print(colored("/===\  | |   | | | |  \  /  | | | | | | | |   | |_  | __|   /===\  ", red).center(width, ' '))
+    print(colored("|===|  | |   | | | |   \/   | | __| | | | |   |  _| |  \    |===| ", red).center(width, ' '))
+    print(colored("\===/  | |_  | | | | |\__/| | | |   | | | |_  | |_  | | \   \===/ ", red).center(width, ' '))
+    print(colored(" \=/   \___/ \___/ |_|    |_| |_|   |_| |___| |___| |_||_\   \=/  ", red).center(width, ' '))
+    print('\n')
+    print(colored('#' * 127, green))
 
 
 # runs program on dna sequence and compares it to expected value
@@ -224,13 +248,15 @@ def multiple():
 def sanitize_m(input_m):
     for x, item in enumerate(input_m):  
         if item != "M" and item != "R" and not item.isdigit():
+            print("Input must be either a n 'M', 'R', or a number")
             return False
         elif item == "M":
             if x == 0 or x == len(input_m)-1:
                 print("Mismatch cannot be on the end")
                 return False
         elif item == "R":
-            if x == len(input_m)-1 or not input_m[x].isdigit():
+            if x == len(input_m)-1 or not input_m[x+1].isdigit():
+                print("R cannot be the last character and must be followed by a digit")
                 return False
     return True
 
@@ -272,7 +298,7 @@ def add_stretch(strands,  number):
 # add random stretch of base pairs
 def add_stretch_rand(strands,  number):
     basepairs = ["AT", "GC"]
-    for x in range(number):
+    for x in range(int(number)):
         integer = random.randint(0,1)
         strands[0] += basepairs[integer][0]
         strands[1] += basepairs[integer][1]
@@ -312,12 +338,13 @@ def add_mismatches(sequence):
 
 if __name__ == '__main__':
 
-
     if len(sys.argv) > 1:
         print("Program only accepts two total command line arguments")
         print("usage: python compiler.py")
         sys.exit(0)
 
+    call(['clear'])
+    title()
     details()
     help()
 
