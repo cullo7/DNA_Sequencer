@@ -3,6 +3,7 @@
     association melting temperaeure
 """
 
+import random
 import math
 import sys
 from subprocess import call
@@ -23,7 +24,6 @@ from energy import get_symmetry_g as get_sym
 
 def find_melting_temperature(s):
     s.set_complementary(True)
-
     t = 0
     t1 = 0
     sl = s.length
@@ -42,11 +42,11 @@ def find_melting_temperature(s):
             s.add(nn_energy(s.get_3_s(x,x + 2), s.get_5_s(x, x + 2)))
         # look for base pair inverse mismatch value
         else:
-            # print(s.three_prime[x]+s.three_prime[x+1] +", "+ s.five_prime[x]+s.five_prime[x+1])
+        # print(s.three_prime[x]+s.three_prime[x+1] +", "+ s.five_prime[x]+s.five_prime[x+1])
             s.add(nn_mm_energy( s.get_3_s(x, x + 2), s.get_5_s(x, x + 2)))
             s.set_complementary(False)
-        
-    # if s is symmetrical, add symmetry value
+
+# if s is symmetrical, add symmetry value
     s.add(get_sym(s.get_complementary()))
 
     # print("E: "+str(s.get_energy()))
@@ -78,7 +78,7 @@ def find_melting_temperature(s):
     g = math.pow(8.31,-5)
     temperature_salt = (1/temperature) + a + b*math.log(Mg_mol, math.exp(1)) +/
         (f * (c+d*math.log(Mg_mol,math.exp(1))))+ ((1/(2*(length-1)))*(e +\
-            (f*math.log(Mg_mol, math.exp(1))) +\
+                (f*math.log(Mg_mol, math.exp(1))) +\
                 (g*math.pow(math.log(Mg_mol, math.exp(1)), 2))))
     """
 
@@ -115,7 +115,8 @@ def help():
     print("help: Show help menu")
     print("test: Run program on sequence and compare to expected results")
     print("show: Show sequence and expected result for that sequence")
-    print("details: Explains experimental conditions and procedure\n")
+    print("details: Explains experimental conditions and procedure")
+    print("multiple: Enter menu for running and recording multiple sequences\n")
 
 
 # runs program on dna sequence and compares it to expected value
@@ -134,16 +135,15 @@ def test(number):
 
 # details about the program
 def details():
-    print("Parameters:")
+    print("\nParameters:\n")
     print("pH: 7")
-    print("Mg+ molarity: .5")
-    print("Oligonucleotide probe molarity: 1\n")
-    print("Measurements:")
+    print("oligonucleotide: 1E-4 for self-complementary sequences and 4E-4 for all others")
+    print("\nMeasurements:\n")
     print("Gibb's free energy: kcal/mol")
     print("Enthalpy: kcal/mol")
     print("Entropy: eu")
-    print("Temperature: K\n")
-    print("Goal:")
+    print("Temperature: K")
+    print("\nGoal:\n")
     print("To find the temperature at which half of a DNA duplex")
     print("dissociates 1/2 of its base pairs from the Gibb's energy")
     print("contribution of each base pair bond.\n")
@@ -189,34 +189,129 @@ def is_complement(b1, b2):
         return True
     return False
 
-def read_file(file_name):
-    prime_5 = ""
-    prime_3 = ""
-    with open(file_name) as f:
-        seq = f.read()
-    output = open(file_name[:len(file_name)-4]+"_output.txt", 'w+')
-    output = open("test.txt", "w")
-    output.write("Hi")
-    seq = seq.split()
-    delimit = False
-    for x in range(len(seq)):
-        for i in range(len(seq[0])):
-            if seq[x][i] == '/':
-                delimit = True
-            elif delimit:
-                prime_5 += seq[x][i]
-            else:
-                prime_3 += seq[x][i]
+
+# Formatting negative and position numbers to fit uniformly
+def fformat(number):
+    if(number >= 0): 
+        return str(number) + " " + '\t'
+    else:
+      return str(number) + '\t'
+
+# interface to run multiple sequence
+def multiple():
+    print()
+    print("Enter numbers to indicate what sequences you would like to test")
+    print("Enter a number for the number of adjacent matches then M for a mismatch")
+    print("This program will find the average melting temperature for G-C matches and A-T matches with")
+    print("All possible mismatches. Putting R before the number will make the matches random")
+    print()
+    print("Example 1: 3M3 -- three matches , a mismatch and three more matches")
+    print("Example 2: 4M2 -- four matches , a mismatch and two more matches")
+    print("Example 3: 3 -- three matches")
+    print("Example 4: R3MR3 -- three random matches , a mismatch and three more random matches")
+    print("Enter 'quit', 'exit', or 'q' to exit")
+    print()
+    i = 1
+    sequence = ""
+    while sequence != "exit" and sequence != "quit" and sequence != "q":
+        sequence = input(str(i) + ": ")
+        if sanitize_m(sequence):
+            s = seudo_sequence_converter(sequence)
+            run_sequences(add_mismatches(s), sequence)
+        i += 1
+
+# sanitize multiple sequence input
+def sanitize_m(input_m):
+    for x, item in enumerate(input_m):  
+        if item != "M" and item != "R" and not item.isdigit():
+            return False
+        elif item == "M":
+            if x == 0 or x == len(input_m)-1:
+                print("Mismatch cannot be on the end")
+                return False
+        elif item == "R":
+            if x == len(input_m)-1 or not input_m[x].isdigit():
+                return False
+    return True
+
+# creates and tests sequences
+def seudo_sequence_converter(sequence):
+    # [3'-high, 5'-high, 3'-low, 5'-low]
+    strands = ["","","",""]
+    random = False
+    sequences = []
+    for x, item in enumerate(sequence):	
+        if item == "R":
+            random = True
+        elif item.isdigit() and random:
+            add_stretch_rand(strands, item)
+            random = False
+        elif item.isdigit():
+            add_stretch(strands, item)
+        elif item == "M":
+            strands[0] += "M"
+            strands[1] += "M"
+            strands[2] += "M"
+            strands[3] += "M"
+        else:
+            print("seudo-sequence character not recognized")
+    sequences.append(strands[0] + '/' + strands[1])
+    sequences.append(strands[2] + '/' + strands[3])
+    return sequences
+
+# Add stretch of matches/mismatches to a strand
+def add_stretch(strands,  number):
+    basepairs = ["AT", "GC"]
+    number = int(number)
+    strands[0] += number * basepairs[1][0]
+    strands[1] += number * basepairs[1][1]
+    strands[2] += number * basepairs[0][0]
+    strands[3] += number * basepairs[0][1]
+    return strands
+
+# add random stretch of base pairs
+def add_stretch_rand(strands,  number):
+    basepairs = ["AT", "GC"]
+    for x in range(number):
+        integer = random.randint(0,1)
+        strands[0] += basepairs[integer][0]
+        strands[1] += basepairs[integer][1]
+        strands[2] += basepairs[integer][0]
+        strands[3] += basepairs[integer][1]
+    return strands
+
+# find energy, enthalphy, entropy and temperature of sequences
+def run_sequences(sequences, name):
+    # create output file with filename + "output.txt"
+    output = open(name + "_output.txt", 'w')
+    for x, sequence in enumerate(sequences):
+        prime_3 = sequence.split('/')[0]
+        prime_5 = sequence.split('/')[1]
         s = find_melting_temperature(Sequence(prime_3, prime_5, .004))
-        # output.write(str(seq[x]) + "- E: " + str(s.energy) + ", H: " + str(s.enthalpy) + ", S: " + str(s.entropy))
+        output.write(str(sequence) + '\t' + fformat(s.energy) + fformat(s.enthalpy) + fformat(s.entropy))
+        output.write('\n')
+
+# add tuples of variable size
+def add_tuples(t1, t2, size):
+    for x in range(len(t1)):
+        t1[x] += t2[x]
+
+# go through sequences and add possible mismatches is stipulated
+# this will only work if there is one mismatch in the sequence
+def add_mismatches(sequence):
+    bases = ["AC", "AG", "AA", "GA", "GG", "GT", "CA", "CC", "CT", "TC", "TT", "TG"]
+    new_sequence = []
+    for x, item in enumerate(sequence):
+        if "M" in item:
+            matched = item.split("M")
+            for x in range(len(bases)):
+                new_sequence.append(matched[0]+ bases[x][0] + matched[1] + bases[x][1] + matched[2])
+        else:
+            new_sequence.append(item)
+    return new_sequence
 
 if __name__ == '__main__':
 
-    """
-    if sys.argv[0] == "compiler.py" and sys.argv[1] == "-f" and len(sys.argv) == 3:
-        read_file(sys.argv[2])
-        exit(0)
-    """
 
     if len(sys.argv) > 1:
         print("Program only accepts two total command line arguments")
@@ -224,6 +319,7 @@ if __name__ == '__main__':
         sys.exit(0)
 
     details()
+    help()
 
     # number of samples
     with open("dna_samples/catalog.txt") as f:
@@ -236,6 +332,8 @@ if __name__ == '__main__':
             print("Invalid command: enter help for command menu")
         elif command[0] == "help" or command[0] == "h":
             help()
+        elif command[0] == "multiple" or command[0] == "m":
+            multiple()
         elif command[0] == "test" or command[0] == "t":
             if len(command) > 1:
                 if command[1] == "all":

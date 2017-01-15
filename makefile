@@ -8,9 +8,9 @@ clean:
 	make clean-pyc && make clean-build
 
 clean-pyc:
-	rm -rf '*.pyc'
-	rm -rf '*.pyo'
-	rm -rf '*~'
+	rm -rf *.pyc
+	rm -rf *.pyo
+	rm -rf *~
 
 clean-build:
 	rm -rf __pycache__/
