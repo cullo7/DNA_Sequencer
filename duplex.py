@@ -112,16 +112,3 @@ class Sequence(object):
 
     def get_initial(self):
         return self.initial
-
-    # Will probably move this to visualize
-    def print_out(self):
-        print("Complemtary: " + self.complementary)
-        print("Symmetric: " + self.symmetry)
-        print("Five Prime Sequence: " + self.five_prime)
-        print("Three Prime Sequence: " + self.three_prime)
-        print("Duplex Molarity: " + self.oligo_molarity)
-        print("Salt Molarity: " + self.salt_molarity)
-        print("Length: " + self.length)
-        print("Energy: " + self.energy)
-        print("Enthalpy: " + self.enthalpy)
-        print("Entropy: " + self.entropy)

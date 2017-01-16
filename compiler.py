@@ -1,6 +1,7 @@
 """
     Compiler for a DNA duplex to calculate the dissociation and
-    association melting temperaeure
+    association melting temperature with one or two base pair
+    mismatches
 """
 
 import random
@@ -15,25 +16,18 @@ from energy import get_nearest_neighbor_energy as nn_energy
 from energy import get_nearest_neighbor_mismatch_energy as nn_mm_energy
 from energy import get_symmetry_g as get_sym
 
-# from graphic import visualize_genome as visualize
-
-"""
-    Calculate melting temperature of dissociation based on nearest
-    neighbor method
-"""
-
-
 def find_melting_temperature(s):
+    """
+        Description: Calculate melting temperature of dissociation based on nearest
+        neighbor method
+
+        Returns: Sequence Objects with energy, enthalpy, entropy, and temperature values
+
+        Input:Sequence object with strand information
+    """
     s.set_complementary(True)
-    t = 0
-    t1 = 0
     sl = s.length
     for x in range(sl - 1):
-        t = s.get_energy()
-        # print("E: " + str(round((t - t1), 2)))
-        # print(s.get_energy())
-        # print(s.get_3_s(x, x + 2) + " " + s.get_5_s(x, x + 2))
-        t1 = t
         # check for symmetry
         if(s.get_3(x) + s.get_5(x) != s.get_5(sl - 1 - x) + s.get_3(sl - 1 - x)):
             s.set_complementary(False)
@@ -47,10 +41,9 @@ def find_melting_temperature(s):
             s.add(nn_mm_energy( s.get_3_s(x, x + 2), s.get_5_s(x, x + 2)))
             s.set_complementary(False)
 
-# if s is symmetrical, add symmetry value
+    # if s is symmetrical, add symmetry value
     s.add(get_sym(s.get_complementary()))
 
-    # print("E: "+str(s.get_energy()))
     # calculate energy values of first pair ignoring nearest neighbor
     s.add(i_energy(s.get_initial(), s.get_terminal(), s.get_complementary()))
 
@@ -68,36 +61,25 @@ def find_melting_temperature(s):
     R = 1.987
     s.set_temperature((s.get_enthalpy()*1000) / (s.get_entropy() + (R * math.log(s.get_oligo_molarity() , math.exp(1)))))
 
-    """
-    temperature calculation with salt
-    a = math.pow(3.92,-5)
-    b = math.pow(-9.11,-6)
-    c = math.pow(6.26,-5)
-    d = math.pow(1.42,-5)
-    e = math.pow(-4.82,-4)
-    f = math.pow(5.25,-4)
-    g = math.pow(8.31,-5)
-    temperature_salt = (1/temperature) + a + b*math.log(Mg_mol, math.exp(1)) +/
-        (f * (c+d*math.log(Mg_mol,math.exp(1))))+ ((1/(2*(length-1)))*(e +\
-                (f*math.log(Mg_mol, math.exp(1))) +\
-                (g*math.pow(math.log(Mg_mol, math.exp(1)), 2))))
-    """
-
     return s
 
 
-"""
-   string from text file and creates DNA sequence for 5'->3' and 3'->5' strand
-"""
-
-
 def parse_genome(number):
+    """
+       Description: Creates DNA sequence for 5'->3' and 3'->5' strand
+
+       Returns: Sequence object with 3' and 5' sequences
+
+       Input: Number of DNA sample file to read from
+    """
     prime_5 = ""
     prime_3 = ""
+    
     with open("dna_samples/dna_sample_" + str(number) + ".txt") as f:
         seq = f.read()
     seq = seq.split()
     even = True
+
     for x in range(len(seq)):
         if seq[x] != '/n' and seq[x] != ' ':
             if even:
@@ -106,11 +88,14 @@ def parse_genome(number):
             else:
                 prime_5 += seq[x]
                 even = True
+
     return Sequence(prime_3, prime_5, .004)
 
 
-# Show help menu
 def help():
+    """
+        Description: Prints help menu
+    """
     print("Commands:")
     print("")
     print("help(): Show help menu")
@@ -120,8 +105,10 @@ def help():
     print("multiple(): Enter menu for running and recording multiple sequences\n")
 
 
-# prints intro title
 def title():
+    """
+        Description: Prints introduction title
+    """
     width = 125
     red = 'red'
     green = 'green'
@@ -143,8 +130,14 @@ def title():
     print(colored('#' * 127, green))
 
 
-# runs program on dna sequence and compares it to expected value
 def test(number):
+    """
+        Description: runs program on dna sequence and compares it to expected value
+
+        Input: Number of DNA sample file to test
+
+        Output: Sequence object credentials (energy, enthalpy, etc.)
+    """
     sequence = parse_genome(number)
     data = find_melting_temperature(sequence)
     print("Length: " + str(data.length))
@@ -157,8 +150,10 @@ def test(number):
     show_results(number)
 
 
-# details about the program
 def details():
+    """
+        Description: Prints details about the program
+    """
     print("\nParameters:\n")
     print("pH: 7")
     print("oligonucleotide: 1E-4 for self-complementary sequences and 4E-4 for all others")
@@ -173,8 +168,14 @@ def details():
     print("contribution of each base pair bond.\n")
 
 
-# prints out a dna sequence from a sample file
 def show(number):
+    """
+        Description: Prints DNA sequence from sample file
+
+        Input: Number of DNA sample file to read from
+
+        Output: DNA Sequence
+    """
     print("Sequence\n")
     # print dna sequence
     with open("dna_samples/dna_sample_" + str(number) + ".txt") as f:
@@ -183,8 +184,14 @@ def show(number):
     show_results(number)
 
 
-# show expected results on file
 def show_results(num):
+    """
+        Description: Prints out a dna sequence from a sample file
+
+        Input: Number of DNA sample file to read from
+
+        Output: Expected values for the sample DNA sequence
+    """
     print("Expected Output:")
     start = ((int(num) - 1) * 7) + 1
     end = start + 5
@@ -192,21 +199,27 @@ def show_results(num):
     call(["sed", "-n", s, "dna_samples/catalog.txt"])
 
 
-# show all sample sequences
 def show_all(n):
+    """
+        Description: Shows all sample DNA file sequences and expected values
+    """
     for x in range(n):
         show(x + 1)
 
 
-# test all samples
 def test_all(n):
+    """
+        Description: Tests all sample DNA file sequences and expected values
+    """
     for x in range(n):
         test(x + 1)
         print()
 
 
-# test if bases are complements
 def is_complement(b1, b2):
+    """ 
+        Description: Tests if bases are complements
+    """
     if (b1 == 'T' and b2 == 'A') or (b1 == 'A' and b2 == 'T'):
         return True
     if (b1 == 'C' and b2 == 'G') or (b1 == 'G' and b2 == 'C'):
@@ -214,15 +227,21 @@ def is_complement(b1, b2):
     return False
 
 
-# Formatting negative and position numbers to fit uniformly
 def fformat(number):
+    """
+        Description: Formats negative and position numbers to fit uniformly
+    """
     if(number >= 0): 
         return str(number) + " " + '\t'
     else:
       return str(number) + '\t'
 
-# interface to run multiple sequence
 def multiple():
+    """
+        Description: Interface to run multiple sequence
+
+        Output: Instructions for UI
+    """
     print()
     print("Enter numbers to indicate what sequences you would like to test")
     print("Enter a number for the number of adjacent matches then M for a mismatch")
@@ -253,8 +272,14 @@ def multiple():
         i += 1
         sequence = input(str(i) + ": ")
 
-# sanitize multiple sequence input
 def sanitize_m(input_m):
+    """
+        Description: Sanitize multiple sequence input
+
+        Returns: True if the input is valid, False otherwise
+
+        Input: Suedo-sequence for multiple sequence generation
+    """
     for x, item in enumerate(input_m):  
         if item != "M" and item != "R" and not item.isdigit():
             print("item: "+ str(item))
@@ -270,8 +295,14 @@ def sanitize_m(input_m):
                 return False
     return True
 
-# creates and tests sequences
 def seudo_sequence_converter(sequence):
+    """
+        Descripton: Creates sequences from seudo-sequences and adds them to a list
+
+        Returns: List of generated sequences
+
+        Input: Seudo-sequence, ex: R3MR3 --three random basepairs, mismatch, three random base pairs
+    """
     # [3'-high, 5'-high, 3'-low, 5'-low]
     strands = ["","","",""]
     random = False
@@ -316,8 +347,14 @@ def seudo_sequence_converter(sequence):
     sequences.append(strands[2] + '/' + strands[3])
     return sequences
 
-# Add stretch of matches/mismatches to a strand
 def add_stretch(strands,  number):
+    """
+        Description Add stretch of matches/mismatches to a strand
+
+        Returns: Strands with base pair matches added
+
+        Input: List - with strands to appended to, Number - number of additions of a base pair 
+    """
     basepairs = ["AT", "GC"]
     number = int(number)
     strands[0] += number * basepairs[1][0]
@@ -326,8 +363,14 @@ def add_stretch(strands,  number):
     strands[3] += number * basepairs[0][1]
     return strands
 
-# add random stretch of base pairs
 def add_stretch_rand(strands,  number):
+    """
+        Description Add stretch of random matches/mismatches to a strand
+
+        Returns: Strands with random base pair matches added
+
+        Input: List - with strands to appended to, Number - number of additions of a base pair 
+    """
     basepairs = ["AT", "GC"]
     for x in range(int(number)):
         integer = random.randint(0,1)
@@ -337,8 +380,13 @@ def add_stretch_rand(strands,  number):
         strands[3] += basepairs[integer][1]
     return strands
 
-# find energy, enthalphy, entropy and temperature of sequences
 def run_sequences(sequences, name, same_file):
+    """
+        Description: Find energy, enthalphy, entropy and temperature of each sequence in list
+        
+        Input: sequences - list of sequence, name - seudo-sequence, smae_file - sentinel to specify
+            if output should be in the same file
+    """
     # create output file with filename + "output.txt"
     if same_file == True:
         output = open("output.txt", 'a')
@@ -353,14 +401,19 @@ def run_sequences(sequences, name, same_file):
             output.write(str(sequence) + '\t' + fformat(s.energy) + fformat(s.enthalpy) + fformat(s.entropy) + fformat(s.temperature) + str(len(prime_3)))
             output.write('\n')
 
-# add tuples of variable size
 def add_tuples(t1, t2, size):
+    """
+        Definition: Add tuples of variable size
+    """
     for x in range(len(t1)):
         t1[x] += t2[x]
 
-# go through sequences and add possible mismatches is stipulated
-# this will only work if there is one mismatch in the sequence
 def add_mismatches(sequence):
+    """
+        Description: Goes through sequences and add possible mismatches as stipulated
+            
+        Rule: This will only work if there is one mismatch in the sequence
+    """
     bases = ["AC", "AG", "AA", "GA", "GG", "GT", "CA", "CC", "CT", "TC", "TT", "TG"]
     new_sequence = []
     for x, item in enumerate(sequence):
