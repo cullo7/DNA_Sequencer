@@ -33,11 +33,9 @@ def find_melting_temperature(s):
             s.set_complementary(False)
         # find complementary base pair nearest neighbor energy
         if is_complement(s.get_5(x +1), s.get_3(x +1)) and is_complement(s.get_3(x), s.get_5(x)):
-            # print(s.three_prime[x]+s.three_prime[x+1] +", "+ s.five_prime[x]+s.five_prime[x+1])
             s.add(nn_energy(s.get_3_s(x,x + 2), s.get_5_s(x, x + 2)))
         # look for base pair inverse mismatch value
         else:
-        # print(s.three_prime[x]+s.three_prime[x+1] +", "+ s.five_prime[x]+s.five_prime[x+1])
             s.add(nn_mm_energy( s.get_3_s(x, x + 2), s.get_5_s(x, x + 2)))
             s.set_complementary(False)
 
@@ -259,15 +257,14 @@ def multiple():
     choice = input("(y or n): ")
     print()
     if choice == "y" or choice == "yes":
+        open("output.txt",'w')
         same_file = True
 
     i = 1
     sequence = input(str(i) + ": ")
     while sequence != "exit" and sequence != "quit" and sequence != "q":
-        print("seq: "+ str(sequence))
         if sanitize_m(sequence):
             s = seudo_sequence_converter(sequence)
-            print("s: "+ str(s))
             run_sequences(add_mismatches(s), sequence, same_file)
         i += 1
         sequence = input(str(i) + ": ")
@@ -321,13 +318,12 @@ def seudo_sequence_converter(sequence):
                     temp = sequence[x:x+i]
             
             add_stretch_rand(strands, temp)
-            print("i" + str(i))
             x+= (i-2)
             random = False
         elif sequence[x].isdigit():
             temp = sequence[x]
             i = 1
-            for i in range(1, len(sequence)-x):
+            for i in range(1, len(sequence)-x+2):
                 if not sequence[x:x+i].isdigit():
                     break
                 else:
