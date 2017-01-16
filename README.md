@@ -27,8 +27,68 @@ Van 't Hoff Equation:
 
 ![alt text][Van_Hoff]
  
+###5. Usage
 
-###5. References
+####Running Program
+Python3
+
+```
+$ make run
+or
+$ make irun (python3 < input.txt)
+or
+$ python3 compiler.py
+```
+
+####Cleaning, Editing
+
+```
+$ make clean --cleans build and execution artifacts)
+$ make lint --check style with flake8
+$ make isort --sort import statements
+$ make help --information on makefile
+```
+
+####Running Multiple Sequences
+
+```
+[DNA_compiler]: multiple (or 'm')
+...
+1: R3 --random sequence of length 3
+2: 3M3 --three matches, one mismatch, three matches
+3: R5MR2 --five random matches, one mismatch, two random matches
+4: quit
+```
+
+####Viewing Test Cases
+
+```
+[DNA_compiler]: test [1-15] (or 't')
+...
+energy:#
+enthalpy:#
+entropy:#
+temperature:#
+length:#
+```
+
+####Running Test Cases
+
+```
+[DNA_compiler]: show [1-15] (or 's')
+T A
+G C
+C G
+...
+Expected:
+energy:#
+enthalpy:#
+entropy:#
+temperature:#
+length:#
+```
+
+###6. References
 1. "Nucleic acid thermodynamics." Wikipedia. Wikimedia Foundation, n.d. Web. 31 Dec. 2016.
 
 2. Allawi, Hatim T., and John Santalucia. "Thermodynamics and NMR of Internal G·T Mismatches in DNA." Biochemistry 36.34 (1997): 10581-0594. Web.

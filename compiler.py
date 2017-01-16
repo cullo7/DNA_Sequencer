@@ -233,11 +233,12 @@ def multiple():
     print("Example 2: 4M2 -- four matches , a mismatch and two more matches")
     print("Example 3: 3 -- three matches")
     print("Example 4: R3MR3 -- three random matches , a mismatch and three more random matches")
+    print()
     print("Enter 'quit', 'exit', or 'q' to exit")
     print("Would you like to store all results in the same file or separate files?")
-    print()
     same_file = False
     choice = input("(y or n): ")
+    print()
     if choice == "y" or choice == "yes":
         same_file = True
 
