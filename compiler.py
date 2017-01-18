@@ -467,7 +467,6 @@ def difference():
     print("Enter d or default for the default lengths ([5, 10, 20, 50, 100, 130]) or enter manual (or m)")
     print("to enter the numbers manually")
 
-    """
     lengths = []
     data = input(("d or m: "))
     while data != "d" and data != "default" and data != "manual" and data != "m":
@@ -481,9 +480,6 @@ def difference():
             i += 1
     else:
         lengths = [5, 10, 20, 50, 100, 130]
-    """
-
-    lengths = [5, 10, 20, 50, 100, 130]
 
     for x in lengths:
         val = calculate_differences(x)
@@ -527,7 +523,7 @@ def calculate_differences(length):
 
 def get_confidence_level(percentage, mismatched_sequences):
     """
-            Descripton: find confidence level from data -- formula( x̅ ± Za/2 * σ/√(n)) 
+            Description: find confidence level from data -- formula( x̅ ± Za/2 * σ/√(n)) 
     """
     std_dev = numpy.std(mismatched_sequences)
     confidence_level = (lookup_t_distribution(percentage/200)) * (std_dev/math.sqrt(1000))
@@ -618,6 +614,9 @@ def manual():
         sequence = input(">> ")
 
 def sanitize_sequence(iput):
+    """
+        Sanitizing Input for manual-entered sequence
+    """
     if len(iput.split('/')) != 2:
         return False
     if len(iput.split('/')[0]) != len(iput.split('/')[1]):
