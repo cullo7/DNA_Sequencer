@@ -468,20 +468,21 @@ def difference():
     print("to enter the numbers manually")
 
     lengths = []
-    data = input(("d or m: "))
+    data = input("d or m: ")
     while data != "d" and data != "default" and data != "manual" and data != "m":
         print("Command not recognized")
         data = input(("d or m: "))
     if data == "m" or data == "manual":
         i = 1
         while data != "" and data != "quit" and data != "q":
-            data = intput(str(i) + ": ")
+            data = input(str(i) + ": ")
             lengths.append(data)
             i += 1
     else:
         lengths = [5, 10, 20, 50, 100, 130]
 
     for x in lengths:
+        print(x)
         val = calculate_differences(x)
         print("Length: " + str(x))
         print("Mean : " + str(val[0]) + " Kelvin")

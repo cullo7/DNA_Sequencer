@@ -1,4 +1,4 @@
-# DNA_compiler
+# DNA_Sequencer
 
 ![alt text][four_branch]
 
