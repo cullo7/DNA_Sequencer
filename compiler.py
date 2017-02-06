@@ -656,6 +656,8 @@ if __name__ == '__main__':
             print("Invalid command: enter help for command menu")
         elif command[0] == "help" or command[0] == "h":
             help()
+        elif command[0] == "clear" or command[0] == "c":
+            call(['clear'])
         elif command[0] == "multiple" or command[0] == "m":
             multiple()
         elif command[0] == "difference" or command[0] == "d":
