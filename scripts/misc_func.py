@@ -1,18 +1,9 @@
-from scripts.misc_func import find_melting_temperature
+from scripts.genome import find_melting_temperature
+from scripts.duplex import Sequence
 
 """
     Miscellaneous functions
 """
-
-def is_complement(b1, b2):
-    """ 
-        Description: Tests if bases are complements
-    """
-    if (b1 == 'T' and b2 == 'A') or (b1 == 'A' and b2 == 'T'):
-        return True
-    if (b1 == 'C' and b2 == 'G') or (b1 == 'G' and b2 == 'C'):
-        return True
-    return False
 
 def fformat(number):
     """

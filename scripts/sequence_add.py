@@ -5,6 +5,7 @@ import random
 """
 
 bases = ['A', 'C', 'G', 'T']
+base_pairs = ["AT", "GC", "TA", "CG"]
 
 def add_stretch(strands,  number):
     """
@@ -104,7 +105,6 @@ def add_stretch_rand_double(number):
 
     three = ""
     five = ""
-    basepairs = ["AT", "GC", "TA", "CG"]
 
     for x in range(int(number)):
         integer = random.randint(0,3)

@@ -1,4 +1,3 @@
-from scripts.misc_func import is_complement
 from scripts.duplex import Sequence
 from scripts.energy import get_initiation_energy as i_energy
 from scripts.energy import get_nearest_neighbor_energy as nn_energy
@@ -87,5 +86,15 @@ def parse_genome(number):
                 even = True
 
     return Sequence(prime_3, prime_5, .0004)
+
+def is_complement(b1, b2):
+    """ 
+        Description: Tests if bases are complements
+    """
+    if (b1 == 'T' and b2 == 'A') or (b1 == 'A' and b2 == 'T'):
+        return True
+    if (b1 == 'C' and b2 == 'G') or (b1 == 'G' and b2 == 'C'):
+        return True
+    return False
 
 

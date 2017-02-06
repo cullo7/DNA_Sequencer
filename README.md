@@ -27,23 +27,28 @@ Van 't Hoff Equation:
 
 ![alt text][Van_Hoff]
  
-###5. Usage
+###5. Setup
+DNA_Sequencer is configured for Python3. All the necessary modules can be downloaded with pip install 
+and our requirements.txt file.
+```
+pip install -r requirements.txt
+```
+###6. Usage
 
 ####Running Program
-Python3
 
 ```
 $ make run
 or
-$ make irun (python3 < input.txt)
+$ make irun (python3 main.py < input.txt)
 or
-$ python3 compiler.py
+$ python3 main.py
 ```
 
 ####Cleaning, Editing
 
 ```
-$ make clean --cleans build and execution artifacts)
+$ make clean --cleans build and execution artifacts
 $ make lint --check style with flake8
 $ make isort --sort import statements
 $ make help --information on makefile
@@ -88,7 +93,7 @@ temperature:#
 length:#
 ```
 
-###6. References
+###7. References
 1. "Nucleic acid thermodynamics." Wikipedia. Wikimedia Foundation, n.d. Web. 31 Dec. 2016.
 
 2. Allawi, Hatim T., and John Santalucia. "Thermodynamics and NMR of Internal G·T Mismatches in DNA." Biochemistry 36.34 (1997): 10581-0594. Web.
