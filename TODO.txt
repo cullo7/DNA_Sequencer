@@ -1,9 +1,9 @@
-1. Manual entering of strand
-2. Storage -- database
-3. Different salt molarity
-4. Other measurable factors
-5. Graphs
-6. Update README.md
-7. ML
-bug when you enter length 2 sequence for difference
-Bug in seudo code sequence 100M100
+GOALS
+
+* Different salt molarity
+* Storage -- database
+* Other measurable factors
+* Graphs
+* Basic Neural Net
+
+BUGS

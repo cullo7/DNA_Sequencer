@@ -1,3 +1,6 @@
+# TEST SCRIPT FOR DNA_SEQUENCER
+
+# Difference()
 echo "d\nfile\ntest\nd\nq\n" >  input.txt
 make irun
 
@@ -7,5 +10,6 @@ make irun
 echo "d\nstdout\nd\nq\n" >  input.txt
 make irun
 
+# Test()
 echo "t\n10\n\nd\nq\n" >  input.txt
 make irun

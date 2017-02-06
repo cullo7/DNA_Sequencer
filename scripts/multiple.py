@@ -29,7 +29,7 @@ def multiple():
     choice = input("(y or n): ")
     print()
     if choice == "y" or choice == "yes":
-        open("output.txt",'w+')
+        open("output/output.txt",'w+')
         same_file = True
 
     i = 1

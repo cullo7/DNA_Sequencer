@@ -23,7 +23,7 @@ def run_sequences(sequences, name, same_file):
     """
     # create output file with filename + "output.txt"
     if same_file == True:
-        output = open("output/" + "output.txt", 'a')
+        output = open("output/output.txt", 'a')
     else:
         output = open("output/" + name + "_output.txt", 'w')
     for x, sequence in enumerate(sequences):
