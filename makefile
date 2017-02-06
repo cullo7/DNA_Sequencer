@@ -2,7 +2,7 @@ HOST=127.0.0.1
 TEST_PATH=./
 
 run:
-	python3 compiler.py
+	python3 main.py
 
 clean:
 	make clean-pyc && make clean-build
@@ -11,9 +11,10 @@ clean-pyc:
 	rm -rf *.pyc
 	rm -rf *.pyo
 	rm -rf *~
+	rm -rf output/*
 
 clean-build:
-	rm -rf __pycache__/
+	rm -rf scripts/_pycache__/
 
 sort:
 	sh -c "isort --skip-glob=.tox --recursive . "
@@ -22,7 +23,7 @@ lint:
 	flake8 --exclude=.tox
 
 irun:
-	python3 compiler.py < input.txt
+	python3 main.py < input.txt
 
 .PHONY: clean-pyc clean-build
 
