@@ -2,16 +2,16 @@
 
 ![alt text][four_branch]
 
-###1. Description
+### 1. Description
 Compiler that finds the melting temperature for dissociation of a DNA duplex with one or two consecutive mismatched base pairs.
 
-###2. Parameters
+### 2. Parameters
 Input can be a double-stranded DNA with a up to two mismatched base pairs, G-C pairs and and A-T pairs.
 
-###3. Purpose
+### 3. Purpose
 If we can find the melting temperature for any DNA strand, we can accurately denature and anneal any DNA strand within a very small margin of error.
 
-###4. Formula
+### 4. Formula
 Our formula for calculating melting temperature is based on the Gibb's free energy, enthalpy, and entropy contribution of each base pair using the nearest neighbor calculation. With the base melting temperature, we then take into account numerous other factors such as:
 * Salinity percentage
 * G-C content
@@ -27,15 +27,15 @@ Van 't Hoff Equation:
 
 ![alt text][Van_Hoff]
  
-###5. Setup
+### 5. Setup
 DNA_Sequencer is configured for Python3. All the necessary modules can be downloaded with pip install 
 and our requirements.txt file.
 ```
 pip install -r requirements.txt
 ```
-###6. Usage
+### 6. Usage
 
-####Running Program
+#### Running Program
 
 ```
 $ make run
@@ -45,7 +45,7 @@ or
 $ python3 main.py
 ```
 
-####Cleaning, Editing
+#### Cleaning, Editing
 
 ```
 $ make clean --cleans build and execution artifacts
@@ -54,7 +54,7 @@ $ make isort --sort import statements
 $ make help --information on makefile
 ```
 
-####Running Multiple Sequences
+#### Running Multiple Sequences
 
 ```
 [DNA_compiler]: multiple (or 'm')
@@ -65,7 +65,7 @@ $ make help --information on makefile
 4: quit
 ```
 
-####Viewing Test Cases
+#### Viewing Test Cases
 
 ```
 [DNA_compiler]: test [1-15] (or 't')
@@ -77,7 +77,7 @@ temperature:#
 length:#
 ```
 
-####Running Test Cases
+#### Running Test Cases
 
 ```
 [DNA_compiler]: show [1-15] (or 's')
@@ -93,7 +93,7 @@ temperature:#
 length:#
 ```
 
-###7. References
+### 7. References
 1. "Nucleic acid thermodynamics." Wikipedia. Wikimedia Foundation, n.d. Web. 31 Dec. 2016.
 
 2. Allawi, Hatim T., and John Santalucia. "Thermodynamics and NMR of Internal G·T Mismatches in DNA." Biochemistry 36.34 (1997): 10581-0594. Web.
