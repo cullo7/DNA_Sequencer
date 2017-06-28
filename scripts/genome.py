@@ -7,9 +7,11 @@ from scripts.energy import get_symmetry_g as get_sym
 import math
 
 """
-    Parses and finds temperature for dna strand
+    Parses and finds temperature for dna strand. This is the base function of the 
+    entire project, finding melting temperature of a sequence (variable s in this case)
 """
 
+# Change s variable to a more descriptive name
 def find_melting_temperature(s):
     """
         Description: Calculate melting temperature of dissociation based on nearest
@@ -20,10 +22,10 @@ def find_melting_temperature(s):
         Input:Sequence object with strand information
     """
     s.set_complementary(True)
-    sl = s.length
-    for x in range(sl - 1):
+    seq_len = s.length
+    for x in range(seq_len - 1):
         # check for symmetry
-        if(s.get_3(x) + s.get_5(x) != s.get_5(sl - 1 - x) + s.get_3(sl - 1 - x)):
+        if(s.get_3(x) + s.get_5(x) != s.get_5(seq_len - 1 - x) + s.get_3(seq_len- 1 - x)):
             s.set_complementary(False)
         # find complementary base pair nearest neighbor energy
         if is_complement(s.get_5(x +1), s.get_3(x +1)) and is_complement(s.get_3(x), s.get_5(x)):
@@ -51,6 +53,7 @@ def find_melting_temperature(s):
         the melting point of a nucleic acid duplex of
     """
 
+    # This is our mathematical formula for 
     R = 1.987
     s.set_temperature((s.get_enthalpy()*1000) / (s.get_entropy() + (R * math.log(s.get_oligo_molarity() , math.exp(1)))))
 

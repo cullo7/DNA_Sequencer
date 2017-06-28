@@ -1,4 +1,9 @@
 """
+    Functions for energy additions such as nearest neighbor contribution.
+    symmetry, and initial base pair
+"""
+
+"""
     All possible base pairs delta G energy from
     https://en.wikipedia.org/wiki/Nucleic_acid_thermodynamics
 """

@@ -4,7 +4,8 @@ from scripts.genome import parse_genome
 from scripts.genome import find_melting_temperature
 
 """
-    Tests algorithm on sample cases
+    Tests algorithm on sample cases. Runs temperature calculation against pre-written input 
+    sequence files in this repository
 """
 
 

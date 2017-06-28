@@ -1,9 +1,0 @@
-GOALS
-
-* Different salt molarity
-* Storage -- database
-* Other measurable factors
-* Graphs
-* Basic Neural Net
-
-BUGS

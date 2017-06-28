@@ -1,7 +1,7 @@
 import random
 
 """
-    Functions to add to DNA strands
+    Functions to add to DNA strands: either add ordered sequence or random
 """
 
 bases = ['A', 'C', 'G', 'T']
@@ -9,7 +9,7 @@ base_pairs = ["AT", "GC", "TA", "CG"]
 
 def add_stretch(strands,  number):
     """
-        Description Add stretch of matches/mismatches to a strand
+        Description Add stretch of ordered matches/mismatches to a strand
 
         Returns: Strands with base pair matches added
 
@@ -46,65 +46,12 @@ def add_stretch_rand_double(number):
 
         Returns: Strands with random base pair matches added to two strands
 
-        Input: strands - two strands to appended to, number - number of additions of a base pair 
+        number - number of additions of a base pair 
     """
 
     three = ""
     five = ""
     basepairs = ["AT", "GC", "TA", "CG"]
-
-    for x in range(int(number)):
-        integer = random.randint(0,3)
-        three += basepairs[integer][0]
-        five += basepairs[integer][1]
-
-    return three + '/' + five
-
-
-def add_stretch(strands,  number):
-    """
-        Description Add stretch of matches/mismatches to a strand
-
-        Returns: Strands with base pair matches added
-
-        Input: List - with strands to appended to, Number - number of additions of a base pair 
-    """
-    basepairs = ["AT", "GC"]
-    number = int(number)
-    strands[0] += number * basepairs[1][0]
-    strands[1] += number * basepairs[1][1]
-    strands[2] += number * basepairs[0][0]
-    strands[3] += number * basepairs[0][1]
-    return strands
-
-def add_stretch_rand(strands,  number):
-    """
-        Description Add stretch of random matches/mismatches to a strand
-
-        Returns: Strands with random base pair matches added
-
-        Input: strands - with strands to appended to, number - number of additions of a base pair 
-    """
-    basepairs = ["AT", "GC", "TA", "CG"]
-    for x in range(int(number)):
-        integer = random.randint(0,3)
-        strands[0] += basepairs[integer][0]
-        strands[1] += basepairs[integer][1]
-        strands[2] += basepairs[integer][0]
-        strands[3] += basepairs[integer][1]
-    return strands
-
-def add_stretch_rand_double(number):
-    """
-        Description Add stretch of random matches/mismatches to a strand
-
-        Returns: Strands with random base pair matches added to two strands
-
-        Input: strands - two strands to appended to, number - number of additions of a base pair 
-    """
-
-    three = ""
-    five = ""
 
     for x in range(int(number)):
         integer = random.randint(0,3)
@@ -131,6 +78,11 @@ def add_mismatches(sequence):
 
 
 def substitute_mismatch(strand):
+    """
+        Swaps out one member of base pair until it is a mismatch. This is
+        used when we want to compare/contrast a sequence with and without
+        a base pair mismatch
+    """
     sub_index = random.randint(1, len(strand.split('/')[0]) - 2)
 
     # keep getting random base until it is different from present one

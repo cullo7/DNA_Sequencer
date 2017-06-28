@@ -1,3 +1,7 @@
+"""
+    Object for a DNA duplex
+"""
+
 class Sequence(object):
     """ Object that holds 3' and 5' sequence for DNA duplex """
 

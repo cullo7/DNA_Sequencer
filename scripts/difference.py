@@ -1,3 +1,8 @@
+"""
+    Simplified functions for calculating the difference in melting temperature between respective
+    sequences (e.g. a sequence with and without a mismatch)
+"""
+
 import sys
 import time
 
